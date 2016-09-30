@@ -35,9 +35,9 @@ module AWSAssumeRole
             parent = AWSAssumeRole::Profile.get_by_name(@options['parent'])
 
             @sts_client = Aws::STS::Client.new(
-                access_key_id:     parent.session.credentials.access_key_id,
-                secret_access_key: parent.session.credentials.secret_access_key,
-                session_token:     parent.session.credentials.session_token,
+                access_key_id:     parent.session.access_key_id,
+                secret_access_key: parent.session.secret_access_key,
+                session_token:     parent.session.session_token,
             )
 
             @sts_client
@@ -68,6 +68,8 @@ module AWSAssumeRole
             return @role_credentials unless @role_credentials.nil?
 
             # TODO load from keyring, check validity
+
+            puts role.credentials.inspect
 
             @role_credentials = role.credentials
         end

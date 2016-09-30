@@ -128,57 +128,49 @@ module AWSAssumeRole
 
         def session(duration=3600)
 
-            require 'hash_dot'
-            require 'time'
-
             # See if we already have a non-expired session cached in this
             # object.
 
             unless @session.nil?
-                expiry = Time.parse(@session[:credentials][:expiration])
-                if expiry > Time.now
-                    return @session
+
+                if @session.expired?
+                    @session.delete_from_keyring(keyring_key)
                 end
-                @session = nil
+
+                return @session
+
             end
 
-            # TODO Should we create just one of these as a class variable?
-            keyring = Keyring.new
-
             # See if there's a non-exipred session cached in the keyring
-            serialised_stored_session = keyring.get_password('AWSAssumeRole', keyring_key)
-            if serialised_stored_session
-                @session = JSON.parse(serialised_stored_session, symbolize_names: true)
 
-                puts "Session: #{@session}"
+            @session = AWSAssumeRole::Credentials.load_from_keyring(keyring_key)
 
-                expiry = Time.parse(@session[:credentials][:expiration])
-                if expiry > Time.now
-                    return @session.to_dot
+            unless @session.nil?
+
+                if @session.expired?
+                    @session.delete_from_keyring(keyring_key)
                 end
-                @session = nil
+
+                return @session
+
             end
 
             unless mfa_arn.nil?
-                @session = sts_client.get_session_token(
+                session = sts_client.get_session_token(
                     duration_seconds: duration,
                     serial_number:    mfa_arn,
                     token_code:       token_code,
-                ).to_h
+                )
             else
-                @session = sts_client.get_session_token(
+                session = sts_client.get_session_token(
                     duration_seconds: duration,
-                ).to_h
+                )
             end
 
-            # Convert expiry time from Time to string for similar reasons
-            puts @session.inspect
-            @session[:credentials][:expiration] = @session[:credentials][:expiration].to_s
+            @session = AWSAssumeRole::Credentials.create_from_sdk(session.credentials)
+            @session.store_in_keyring(keyring_key)
 
-            # Store session in keyring
-            keyring.set_password('AWSAssumeRole', keyring_key, @session.to_json)
-
-            return @session.to_h.to_dot
+            return @session
 
         end
 
