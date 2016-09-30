@@ -1,3 +1,5 @@
+require 'keyring'
+
 module AWSAssumeRole
 
     class Profile
@@ -8,10 +10,12 @@ module AWSAssumeRole
 
         @implementations = {}
         @named_profiles  = {}
+        @config_file     = '-'
 
         class << self
             attr_accessor :implementations
             attr_accessor :named_profiles
+            attr_accessor :config_file
         end
 
         def self.log
@@ -55,6 +59,25 @@ module AWSAssumeRole
             named_profiles[name]
         end
 
+        def self.load_config_file(config_path)
+            @config_file = config_path
+            self.parse_config(File.open(config_path))
+        end
+
+        def self.parse_config(yaml)
+
+            require 'yaml'
+
+            profiles = YAML::load(yaml)
+            profiles.each do |name,options|
+                options['config_file'] = config_file
+                options['name']        = name
+                AWSAssumeRole::Profile.create(name,options)
+            end
+
+        end
+
+
 
         # Superclass for Profile strategies
 
@@ -62,7 +85,10 @@ module AWSAssumeRole
 
             ENV["#{prefix}AWS_ACCESS_KEY_ID"]     = access_key_id
             ENV["#{prefix}AWS_SECRET_ACCESS_KEY"] = secret_access_key
-            #ENV["#{prefix}AWS_SESSION_TOKEN"]     = session_token
+
+            if self.respond_to?(:session_token)
+                ENV["#{prefix}AWS_SESSION_TOKEN"] = session_token
+            end
 
         end
 
@@ -96,23 +122,63 @@ module AWSAssumeRole
             token_code.chomp!
         end
 
+        def keyring_key
+            "#{@options['config_file']}|#{@options['name']}"
+        end
+
         def session(duration=3600)
 
-            return @session unless @session.nil?
+            require 'hash_dot'
+            require 'time'
+
+            # See if we already have a non-expired session cached in this
+            # object.
+
+            unless @session.nil?
+                expiry = Time.parse(@session[:credentials][:expiration])
+                if expiry > Time.now
+                    return @session
+                end
+                @session = nil
+            end
+
+            # TODO Should we create just one of these as a class variable?
+            keyring = Keyring.new
+
+            # See if there's a non-exipred session cached in the keyring
+            serialised_stored_session = keyring.get_password('AWSAssumeRole', keyring_key)
+            if serialised_stored_session
+                @session = JSON.parse(serialised_stored_session, symbolize_names: true)
+
+                puts "Session: #{@session}"
+
+                expiry = Time.parse(@session[:credentials][:expiration])
+                if expiry > Time.now
+                    return @session.to_dot
+                end
+                @session = nil
+            end
 
             unless mfa_arn.nil?
                 @session = sts_client.get_session_token(
                     duration_seconds: duration,
                     serial_number:    mfa_arn,
                     token_code:       token_code,
-                )
+                ).to_h
             else
                 @session = sts_client.get_session_token(
                     duration_seconds: duration,
-                )
+                ).to_h
             end
 
-            return @session
+            # Convert expiry time from Time to string for similar reasons
+            puts @session.inspect
+            @session[:credentials][:expiration] = @session[:credentials][:expiration].to_s
+
+            # Store session in keyring
+            keyring.set_password('AWSAssumeRole', keyring_key, @session.to_json)
+
+            return @session.to_h.to_dot
 
         end
 

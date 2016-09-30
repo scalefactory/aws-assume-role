@@ -30,6 +30,7 @@ module AWSAssumeRole
         def sts_client
 
             return @sts_client unless @sts_client.nil?
+            # TODO check session validity?
 
             parent = AWSAssumeRole::Profile.get_by_name(@options['parent'])
 
@@ -62,12 +63,25 @@ module AWSAssumeRole
 
         end
 
+        def role_credentials
+
+            return @role_credentials unless @role_credentials.nil?
+
+            # TODO load from keyring, check validity
+
+            @role_credentials = role.credentials
+        end
+
         def access_key_id
-            role.credentials.access_key_id
+            role_credentials.access_key_id
         end
 
         def secret_access_key
-            role.credentials.secret_access_key
+            role_credentials.secret_access_key
+        end
+
+        def session_token
+            role_credentials.session_token
         end
 
         def mfa_arn

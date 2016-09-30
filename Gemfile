@@ -3,8 +3,14 @@ source "https://rubygems.org"
 
 gemspec
 
-# Needs to go in the gemspec once this has been merged upstream.
-gem "keyring", :git => 'git@github.com:jtopper/keyring.git', :branch => 'secure_osx_keychain'
+# Temporarily adding these dependencies. Should be resolved once
+# https://github.com/jheiss/keyring/pull/7 is merged.
+case Gem::Platform.local.os
+when 'linux'
+    gem "gir_ffi-gnome_keyring", '~> 0.0.3'
+when 'darwin'
+    gem 'ruby-keychain', '~> 0.3.2'
+end
 
 # Development dependencies - didn't seem to get installed when referenced in the gemspec, find out why.
 gem "bundler"
