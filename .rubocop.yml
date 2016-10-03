@@ -1,0 +1,30 @@
+---
+AllCops:
+    DisplayCopNames: true
+
+Metrics/MethodLength:
+    Enabled: false
+
+Style/IndentationWidth:
+    Width: 4
+
+Style/TrailingCommaInArguments:
+    EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInLiteral:
+    EnforcedStyleForMultiline: comma
+
+Style/EmptyLinesAroundModuleBody:
+    EnforcedStyle: empty_lines
+
+Style/EmptyLinesAroundClassBody:
+    EnforcedStyle: empty_lines
+
+Style/EmptyLinesAroundMethodBody:
+    Enabled: false
+
+Style/EmptyLinesAroundBlockBody:
+    Enabled: false
+
+Metrics/ClassLength:
+    Enabled: false

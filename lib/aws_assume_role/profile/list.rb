@@ -1,29 +1,35 @@
+# AWSAssumeRole
 module AWSAssumeRole
 
-    class Profile::List < Profile
+    class Profile
 
-        register_implementation('list', self)
+        # A Profile implementation which aggregates other profiles.
+        # Used to setenv for multiple credentials, but with different
+        # prefixed.
+        class List < Profile
 
-        @options = nil
-        @name    = nil
+            register_implementation('list', self)
 
-        def initialize(name, options)
+            @options = nil
+            @name    = nil
 
-            # TODO validate options
+            def initialize(name, options)
 
-            @options = options
-            @name    = name
+                # TODO: validate options
 
-        end
+                @options = options
+                @name    = name
 
-        def use
+            end
 
-            @options['list'].each do |i|
+            def use
 
-                puts i['name']
+                @options['list'].each do |i|
+                    puts i['name']
 
-                profile = AWSAssumeRole::Profile.get_by_name(i['name'])
-                profile.set_env(i['env_prefix'])
+                    profile = Profile.get_by_name(i['name'])
+                    profile.set_env(i['env_prefix'])
+                end
 
             end
 

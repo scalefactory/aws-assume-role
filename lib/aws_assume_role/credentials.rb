@@ -1,23 +1,21 @@
+# AWSAssumeRole
 module AWSAssumeRole
 
     require 'keyring'
     require 'json'
 
+    # Represents credentials, used for serialising into keychain
     class Credentials
 
         def self.load_from_keyring(key)
 
             keyring = Keyring.new
-            json_session = keyring.get_password('AWSAssumeRole',key)
+            json_session = keyring.get_password('AWSAssumeRole', key)
 
-            if !json_session
-                return nil
-            end
+            return nil unless json_session
 
             hash = JSON.parse(json_session, symbolize_names: true)
-            if !hash
-                return nil
-            end
+            return nil unless hash
 
             hash[:expiration] = Time.parse(hash[:expiration])
 
@@ -27,10 +25,7 @@ module AWSAssumeRole
 
         def self.create_from_sdk(object)
 
-            unless object.is_a?(Aws::STS::Types::Credentials)
-                raise TypeError
-            end
-
+            raise TypeError unless object.is_a?(Aws::STS::Types::Credentials)
             AWSAssumeRole::Credentials.new(object.to_h)
 
         end
@@ -42,19 +37,19 @@ module AWSAssumeRole
         end
 
         def secret_access_key
-            return @credentials[:secret_access_key]
+            @credentials[:secret_access_key]
         end
 
         def access_key_id
-            return @credentials[:access_key_id]
+            @credentials[:access_key_id]
         end
 
         def session_token
-            return @credentials[:session_token]
+            @credentials[:session_token]
         end
 
         def expiration
-            return @credentials[:expiration]
+            @credentials[:expiration]
         end
 
         def store_in_keyring(key)
@@ -70,7 +65,6 @@ module AWSAssumeRole
         def expired?
             @credentials[:expiration] <= Time.now
         end
-
 
     end
 

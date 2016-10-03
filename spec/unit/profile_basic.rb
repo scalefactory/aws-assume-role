@@ -8,9 +8,9 @@ module AWSAssumeRole
             it 'should create a profile object' do
 
                 @profile = AWSAssumeRole::Profile::Basic.new(
-                    'region':            'eu-west-1',
-                    'access_key_id':     'AKxxxxxxxxxxxxxxxxxx',
-                    'secret_access_key': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                    region:            'eu-west-1',
+                    access_key_id:     'AKxxxxxxxxxxxxxxxxxx',
+                    secret_access_key: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                 )
 
             end
@@ -20,4 +20,3 @@ module AWSAssumeRole
     end
 
 end
-

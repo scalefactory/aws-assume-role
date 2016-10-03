@@ -1,62 +1,72 @@
+# AWSAssumeRole
 module AWSAssumeRole
 
-    class Profile::Basic < Profile
+    class Profile
 
-        register_implementation('basic', self)
+        # Profile implementation which takes credentials from either
+        # passed options, from the environment, or from .aws/credentials
+        # file (per the standard behaviour of Aws::STS::Client)
+        class Basic < Profile
 
-        @sts_client = nil
-        @options    = nil
-        @name       = nil
+            register_implementation('basic', self)
 
-        def initialize(name, options = {})
+            @sts_client = nil
+            @options    = nil
+            @name       = nil
 
-            require 'aws-sdk'
+            def initialize(name, options = {})
 
-            # TODO validate options
-            # TODO default region?
+                require 'aws-sdk'
 
-            @options = options
-            @name    = name
+                # TODO: validate options
+                # TODO: default region?
 
-        end
-
-        def sts_client
-
-            return @sts_client unless @sts_client.nil?
-
-            if @options.key?('access_key_id') and @options.key?('secret_access_key')
-
-                @sts_client = Aws::STS::Client.new(
-                    access_key_id:     @options['access_key_id'],
-                    secret_access_key: @options['secret_access_key'],
-                    region:            @options['region'],
-                )
-
-            else
-
-                @sts_client = Aws::STS::Client.new()
+                @options = options
+                @name    = name
 
             end
 
-            @sts_client
+            def sts_client
 
-        rescue Aws::Errors::MissingRegionError
+                return @sts_client unless @sts_client.nil?
 
-            STDERR.puts 'No region was given. Set one in the credentials file or environment'
-            exit -1
+                if @options.key?('access_key_id') &&
+                   @options.key?('secret_access_key')
 
-        end
+                    @sts_client = Aws::STS::Client.new(
+                        access_key_id:     @options['access_key_id'],
+                        secret_access_key: @options['secret_access_key'],
+                        region:            @options['region'],
+                    )
 
-        def access_key_id
-            @options['access_key_id']
-        end
+                else
 
-        def secret_access_key
-            @options['secret_access_key']
-        end
+                    @sts_client = Aws::STS::Client.new
 
-        def mfa_arn
-            @options['mfa_arn'] || nil
+                end
+
+                @sts_client
+
+            rescue Aws::Errors::MissingRegionError
+
+                STDERR.puts 'No region was given. \
+                    Set one in the credentials file or environment'
+                exit -1 # rubocop:disable Lint/AmbiguousOperator
+
+            end
+
+            def access_key_id
+                @options['access_key_id']
+            end
+
+            def secret_access_key
+                @options['secret_access_key']
+            end
+
+            def mfa_arn
+                @options['mfa_arn'] || nil
+            end
+
         end
 
     end

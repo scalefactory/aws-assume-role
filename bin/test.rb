@@ -1,12 +1,8 @@
 #!/usr/bin/env ruby
 
-$LOAD_PATH.unshift File.expand_path('../lib/', __FILE__) 
+$LOAD_PATH.unshift File.expand_path('../lib/', __FILE__)
 
 require 'aws_assume_role'
-
-#profile = AWSAssumeRole::Profile::Basic.new()
-#puts profile.sts_client.get_caller_identity.inspect
-#puts profile.session().inspect
 
 test_profiles_yaml = <<EOF
 ---
@@ -18,12 +14,12 @@ default:
 mgmt:
     set_environment: true
     type: assume_role
-    role_arn: arn:aws:iam::339253004131:role/TerraformUser 
+    role_arn: arn:aws:iam::339253004131:role/TerraformUser
 
 test:
     set_environment: true
     type: assume_role
-    role_arn: arn:aws:iam::542043528869:role/TerraformUser 
+    role_arn: arn:aws:iam::542043528869:role/TerraformUser
 
 tf_test:
     type: list
