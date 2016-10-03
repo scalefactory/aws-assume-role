@@ -49,29 +49,45 @@ module AWSAssumeRole
 
         end
 
-        def role
+        def role_credentials
 
-            return @role unless @role.nil?
+            # Check for non-expired session cached here
 
-            @role =  sts_client.assume_role(
+            unless @role_credentials.nil?
+
+                if @role_credentials.expired?
+                    @role_credentials.delete_from_keyring(keyring_key)
+                else
+                    return @role_credentials
+                end
+
+            end
+
+            # See if here's a non-exipred session in the keyring
+
+            @role_credentials = AWSAssumeRole::Credentials.load_from_keyring(keyring_key)
+
+            unless @role_credentials.nil?
+
+                if @role_credentials.expired?
+                    @role_credentials.delete_from_keyring(keyring_key)
+                else
+                    return @role_credentials
+                end
+
+            end
+
+            role = sts_client.assume_role(
                 role_arn:          @options['role_arn'],
                 role_session_name: name, # use something else?
                 duration_seconds:  @options['duration'],
             )
 
-            @role
+            @role_credentials = AWSAssumeRole::Credentials.create_from_sdk(role.credentials)
+            @role_credentials.store_in_keyring(keyring_key)
 
-        end
+            return @role_credentials
 
-        def role_credentials
-
-            return @role_credentials unless @role_credentials.nil?
-
-            # TODO load from keyring, check validity
-
-            puts role.credentials.inspect
-
-            @role_credentials = role.credentials
         end
 
         def access_key_id

@@ -135,9 +135,9 @@ module AWSAssumeRole
 
                 if @session.expired?
                     @session.delete_from_keyring(keyring_key)
+                else
+                    return @session
                 end
-
-                return @session
 
             end
 
@@ -149,9 +149,9 @@ module AWSAssumeRole
 
                 if @session.expired?
                     @session.delete_from_keyring(keyring_key)
+                else
+                    return @session
                 end
-
-                return @session
 
             end
 
