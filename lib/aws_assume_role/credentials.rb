@@ -7,18 +7,30 @@ module AWSAssumeRole
     # Represents credentials, used for serialising into keychain
     class Credentials
 
+        include Logging
+
         def self.load_from_keyring(key)
+
+            logger.debug("Keyring: load '#{key}'")
 
             keyring = Keyring.new
             json_session = keyring.get_password('AWSAssumeRole', key)
 
-            return nil unless json_session
+            unless json_session
+                logger.info('No JSON session data in keyring')
+                return nil
+            end
 
             hash = JSON.parse(json_session, symbolize_names: true)
-            return nil unless hash
+
+            unless hash
+                logger.info('Couldn\'t parse keyring data as JSON')
+                return nil
+            end
 
             hash[:expiration] = Time.parse(hash[:expiration])
 
+            logger.debug("Loaded #{hash}")
             AWSAssumeRole::Credentials.new(hash)
 
         end
@@ -54,15 +66,19 @@ module AWSAssumeRole
 
         def store_in_keyring(key)
             keyring = Keyring.new
+            logger.debug("Keyring: store '#{key}' with #{@credentials.to_json}")
             keyring.set_password('AWSAssumeRole', key, @credentials.to_json)
         end
 
         def delete_from_keyring(key)
             keyring = Keyring.new
+            logger.debug("Keyring: delete '#{key}'")
             keyring.delete_password('AWSAssumeRole', key)
         end
 
         def expired?
+            logger.debug("Checking expiry: #{@credentials[:expiration]} "\
+                         '<= Time.now')
             @credentials[:expiration] <= Time.now
         end
 

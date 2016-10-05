@@ -5,7 +5,7 @@ module AWSAssumeRole
     # Base Profile superclass
     class Profile
 
-        require 'logger'
+        include Logging
 
         # Class methods for dispatch to individual Profile strategy
 
@@ -21,12 +21,9 @@ module AWSAssumeRole
 
         end
 
-        def self.log
-            @logger = Logger.new(STDERR) if @logger.nil?
-        end
-
         def self.register_implementation(type, impl)
-            log.info("Registering implementation for type '#{type}': #{impl}")
+            logger.info('Registering implementation ' \
+                        "for type '#{type}': #{impl}")
             AWSAssumeRole::Profile.implementations[type] = impl
         end
 
@@ -41,13 +38,15 @@ module AWSAssumeRole
             options['type'] = 'basic' unless options.key?('type')
 
             if implementations.key?(options['type'])
+                logger.info("Creating profile '#{name}' "\
+                            "with type #{options['type']}")
                 i = implementations[options['type']].new(name, options)
                 named_profiles[name] = i
                 return i
             end
 
-            STDERR.puts "No implementation for profiles of type \
-                '#{options['type']}'"
+            STDERR.puts 'No implementation for profiles of type '\
+                "'#{options['type']}'"
             exit -1 # rubocop:disable Lint/AmbiguousOperator
 
         end
@@ -62,6 +61,7 @@ module AWSAssumeRole
 
         def self.load_config_file(config_path)
             @config_file = config_path
+            logger.info("Loading configuration from #{config_path}")
             parse_config(File.open(config_path))
         end
 
@@ -82,11 +82,15 @@ module AWSAssumeRole
 
         def set_env(prefix = '') # rubocop:disable Style/AccessorMethodName
 
+            logger.info("Setting environment with prefix '#{prefix}'")
+
             ENV["#{prefix}AWS_ACCESS_KEY_ID"]     = access_key_id
             ENV["#{prefix}AWS_SECRET_ACCESS_KEY"] = secret_access_key
 
-            ENV["#{prefix}AWS_SESSION_TOKEN"] =
-                session_token if respond_to?(:session_token)
+            return unless respond_to?(:session_token)
+
+            logger.info(':session_token available, setting environment')
+            ENV["#{prefix}AWS_SESSION_TOKEN"] = session_token
 
         end
 
@@ -129,7 +133,10 @@ module AWSAssumeRole
 
             unless @session.nil?
 
+                logger.info('Found session cached in object')
                 return @session unless @session.expired?
+                logger.info('Session expired, deleting keyring key '\
+                            "'#{keyring_key}'")
                 @session.delete_from_keyring(keyring_key)
 
             end
@@ -140,16 +147,21 @@ module AWSAssumeRole
 
             unless @session.nil?
 
+                logger.info("Found session in keyring for '#{keyring_key}'")
                 return @session unless @session.expired?
+                logger.info('Session expired, deleting keyring key '\
+                            "'#{keyring_key}'")
                 @session.delete_from_keyring(keyring_key)
 
             end
 
             if mfa_arn.nil?
+                logger.info('No MFA ARN for this profile')
                 session = sts_client.get_session_token(
                     duration_seconds: duration,
                 )
             else
+                logger.info("This profile uses MFA ARN #{mfa_arn}")
                 session = sts_client.get_session_token(
                     duration_seconds: duration,
                     serial_number:    mfa_arn,
@@ -158,6 +170,7 @@ module AWSAssumeRole
             end
 
             @session = Credentials.create_from_sdk(session.credentials)
+            logger.info("Storing session in keyring '#{keyring_key}'")
             @session.store_in_keyring(keyring_key)
 
             @session

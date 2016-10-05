@@ -8,6 +8,8 @@ module AWSAssumeRole
         # file (per the standard behaviour of Aws::STS::Client)
         class Basic < Profile
 
+            include Logging
+
             register_implementation('basic', self)
 
             @sts_client = nil
@@ -17,9 +19,6 @@ module AWSAssumeRole
             def initialize(name, options = {})
 
                 require 'aws-sdk'
-
-                # TODO: validate options
-                # TODO: default region?
 
                 @options = options
                 @name    = name
@@ -33,11 +32,22 @@ module AWSAssumeRole
                 if @options.key?('access_key_id') &&
                    @options.key?('secret_access_key')
 
-                    @sts_client = Aws::STS::Client.new(
-                        access_key_id:     @options['access_key_id'],
-                        secret_access_key: @options['secret_access_key'],
-                        region:            @options['region'],
-                    )
+                    if @options.key?('region')
+
+                        @sts_client = Aws::STS::Client.new(
+                            access_key_id:     @options['access_key_id'],
+                            secret_access_key: @options['secret_access_key'],
+                            region:            @options['region'],
+                        )
+
+                    else
+
+                        @sts_client = Aws::STS::Client.new(
+                            access_key_id:     @options['access_key_id'],
+                            secret_access_key: @options['secret_access_key'],
+                        )
+
+                    end
 
                 else
 

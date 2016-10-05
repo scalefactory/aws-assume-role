@@ -6,6 +6,8 @@ module AWSAssumeRole
         # A Profile implementation for assuming roles using STS
         class AssumeRole < Profile
 
+            include Logging
+
             register_implementation('assume_role', self)
 
             @sts_client = nil
@@ -27,14 +29,11 @@ module AWSAssumeRole
                 @options = default_options.merge(options)
                 @name    = name
 
-                # TODO: validate options
-
             end
 
             def sts_client
 
                 return @sts_client unless @sts_client.nil?
-                # TODO: check session validity?
 
                 parent = AWSAssumeRole::Profile.get_by_name(@options['parent'])
 

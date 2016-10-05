@@ -8,6 +8,8 @@ module AWSAssumeRole
         # prefixed.
         class List < Profile
 
+            include Logging
+
             register_implementation('list', self)
 
             @options = nil

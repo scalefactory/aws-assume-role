@@ -31,14 +31,10 @@ tf_test:
 
 EOF
 
-AWSAssumeRole::Profile.log.level = Logger::WARN
-
+AWSAssumeRole::Profile.logger.level = Logger::DEBUG
 AWSAssumeRole::Profile.parse_config(test_profiles_yaml)
 
 p = AWSAssumeRole::Profile.get_by_name('tf_test')
 p.use
 
 system('env | grep "AWS" | sort')
-
-foo = AWSAssumeRole::Profile.get_by_name('mgmt')
-puts foo.role_credentials.to_json

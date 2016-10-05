@@ -10,7 +10,8 @@ module AWSAssumeRole
                 @profile = AWSAssumeRole::Profile::Basic.new(
                     region:            'eu-west-1',
                     access_key_id:     'AKxxxxxxxxxxxxxxxxxx',
-                    secret_access_key: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                    secret_access_key:
+                        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                 )
 
             end
