@@ -102,10 +102,6 @@ module AWSAssumeRole
                 role_credentials.session_token
             end
 
-            def mfa_arn
-                @options['mfa_arn'] || nil
-            end
-
             def use
                 set_env if @options['set_environment']
             end

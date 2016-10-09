@@ -73,10 +73,6 @@ module AWSAssumeRole
                 @options['secret_access_key']
             end
 
-            def mfa_arn
-                @options['mfa_arn'] || nil
-            end
-
         end
 
     end

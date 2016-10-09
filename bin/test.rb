@@ -9,7 +9,6 @@ test_profiles_yaml = <<EOF
 default:
     set_environment: false
     # credentials come from .aws/credentials or environment
-    mfa_arn: arn:aws:iam::754021874844:mfa/jtopper
 
 mgmt:
     set_environment: true

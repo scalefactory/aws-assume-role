@@ -106,10 +106,6 @@ module AWSAssumeRole
             raise NotImplementedError
         end
 
-        def mfa_arn
-            raise NotImplementedError
-        end
-
         attr_reader :name
 
         def use
@@ -117,8 +113,8 @@ module AWSAssumeRole
         end
 
         def token_code
-            puts "Enter MFA token code for #{mfa_arn}"
-            token_code = gets
+            puts "Enter your MFA's time-based one time password: "
+            token_code = STDIN.gets
             token_code.chomp!
         end
 
@@ -155,19 +151,17 @@ module AWSAssumeRole
 
             end
 
-            if mfa_arn.nil?
-                logger.info('No MFA ARN for this profile')
-                session = sts_client.get_session_token(
-                    duration_seconds: duration,
-                )
-            else
-                logger.info("This profile uses MFA ARN #{mfa_arn}")
-                session = sts_client.get_session_token(
-                    duration_seconds: duration,
-                    serial_number:    mfa_arn,
-                    token_code:       token_code,
-                )
-            end
+            identity  = sts_client.get_caller_identity
+            user_name = identity.arn.split('/')[1]
+            mfa_arn   = "arn:aws:iam::#{identity.account}:mfa/#{user_name}"
+
+            mfa_token_code = token_code
+
+            session = sts_client.get_session_token(
+                duration_seconds: duration,
+                serial_number:    mfa_arn,
+                token_code:       mfa_token_code,
+            )
 
             @session = Credentials.create_from_sdk(session.credentials)
             logger.info("Storing session in keyring '#{keyring_key}'")
