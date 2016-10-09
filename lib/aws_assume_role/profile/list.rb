@@ -27,8 +27,24 @@ module AWSAssumeRole
             def use
 
                 @options['list'].each do |i|
+
                     profile = Profile.get_by_name(i['name'])
-                    profile.set_env(i['env_prefix'])
+
+                    next unless @options['set_environment']
+
+                    if i['env_prefix']
+                        profile.set_env(i['env_prefix'])
+                    end
+
+                    if i['map_names']
+                        i['map_names'].each do |name,env|
+                            call = name.to_sym
+                            if profile.respond_to?(call)
+                                ENV[env] = profile.send(call)
+                            end
+                        end
+                    end
+
                 end
 
 
