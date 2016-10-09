@@ -1,32 +1,36 @@
 # Mixin to provide global logging object
-module Logging
+module AWSAssumeRole
 
-    require 'logger'
+    module Logging
 
-    class << self
+        require 'logger'
 
-        def logger
-            @logger ||= Logger.new($stderr)
+        class << self
+
+            def logger
+                @logger ||= Logger.new($stderr)
+            end
+
+            attr_writer :logger
+
         end
 
-        attr_writer :logger
+        def self.included(base)
 
-    end
+            class << base
 
-    def self.included(base)
+                def logger # rubocop:disable Lint/NestedMethodDefinition
+                    Logging.logger
+                end
 
-        class << base
-
-            def logger # rubocop:disable Lint/NestedMethodDefinition
-                Logging.logger
             end
 
         end
 
-    end
+        def logger
+            Logging.logger
+        end
 
-    def logger
-        Logging.logger
     end
 
 end
