@@ -27,11 +27,10 @@ module AWSAssumeRole
             def use
 
                 @options['list'].each do |i|
-                    puts i['name']
-
                     profile = Profile.get_by_name(i['name'])
                     profile.set_env(i['env_prefix'])
                 end
+
 
             end
 
