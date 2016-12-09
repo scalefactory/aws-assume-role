@@ -78,6 +78,23 @@ xx:
 
 ```
 
+
+
+
+## How to use?
+
+### In Environment variable
+
+```
+export AWS_ACCESS_KEY_ID=1234567890010
+export AWS_SECRET_ACCESS_KEY=abcdefghijklmnopqrstuvwzyx1
+export AWS_DEFAULT_REGION=eu-west-1
+```
+
+Then run the `aws-assume-role` command.
+
+### in credentials file
+
 I have the following entry in `~/.aws/credentials`:
 
 ```
@@ -86,16 +103,6 @@ aws_access_key_id = 1234567890010
 aws_secret_access_key = abcdefghijklmnopqrstuvwzyx1
 region = eu-west-1
 ```
-
-
-## How to use?
-
-### In Environment variable
-
-### in credentials file
-
-This is protected by a MFA/2FA device.
-
 
 ### Environment Variables Set
 
