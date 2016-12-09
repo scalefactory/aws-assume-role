@@ -6,7 +6,7 @@ or OSX Keychain so they are not readable from disk.
 
 ## Install
 
-`gem install aws-assume-role`
+`gem install aws_assume_role`
 
 ### Platform notes
 
