@@ -4,12 +4,14 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
     spec.name          = 'aws_assume_role'
-    spec.version       = '0.0.1'
-    spec.authors       = ['Jon Topper']
-    spec.email         = ['jon@scalefactory.com']
+    spec.version       = '0.0.2'
+    spec.authors       = ['Jon Topper', 'Jack Thomas']
+    spec.email         = ['jon@scalefactory.com', 'jack@scalefactory.com']
 
     spec.description   = 'Used to fetch multiple AWS Role Credential '\
-                         'Keys using different Session Keys'
+                         'Keys using different Session Keys '\
+                         'and store them securely using Gnome Keyring '\
+                         'or OSX keychain'
     spec.summary       = 'Manage AWS STS credentials with MFA'
     spec.homepage      = 'https://github.com/scalefactory/aws_assume_role'
     spec.license       = 'MIT'
@@ -23,7 +25,7 @@ Gem::Specification.new do |spec|
 
     spec.add_runtime_dependency 'aws-sdk'
     spec.add_runtime_dependency 'inifile'
-    spec.add_runtime_dependency 'keyring', '~> 0.4.0'
+    spec.add_runtime_dependency 'keyring', '~> 0.4.1'
 
     # spec.add_development_dependency 'bundler', '~> 1.12'
     # spec.add_development_dependency 'rake', '~> 10.0'
