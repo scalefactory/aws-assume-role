@@ -29,7 +29,7 @@ module AWSAssumeRole
                 return nil
             end
 
-            hash[:expiration] = Time.parse(hash[:expiration])
+            hash[:expiration] = Time.parse(hash[:expiration]) unless hash[:expiration].nil? 
 
             logger.debug("Loaded #{hash}")
             AWSAssumeRole::Credentials.new(hash)
@@ -63,6 +63,10 @@ module AWSAssumeRole
 
         def expiration
             @credentials[:expiration]
+        end
+
+        def region
+            @credentials[:region]
         end
 
         def store_in_keyring(key)

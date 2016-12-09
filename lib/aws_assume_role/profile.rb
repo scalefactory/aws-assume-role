@@ -119,6 +119,10 @@ module AWSAssumeRole
             raise NotImplementedError
         end
 
+        def remove
+            raise NotImplementedError
+        end
+
         def token_code
             puts "Enter your MFA's time-based one time password: "
             token_code = STDIN.gets
@@ -158,17 +162,29 @@ module AWSAssumeRole
 
             end
 
-            identity  = sts_client.get_caller_identity
+            begin
+                identity  = sts_client.get_caller_identity
+            rescue Aws::Errors::MissingCredentialsError
+                STDERR.puts "No credentials found. Set one in the credentials file "\
+                     "or environment."
+                exit -1 # rubocop:disable Lint/AmbiguousOperator
+            end
             user_name = identity.arn.split('/')[1]
             mfa_arn   = "arn:aws:iam::#{identity.account}:mfa/#{user_name}"
 
             mfa_token_code = token_code
 
-            session = sts_client.get_session_token(
-                duration_seconds: duration,
-                serial_number:    mfa_arn,
-                token_code:       mfa_token_code,
-            )
+            begin
+                session = sts_client.get_session_token(
+                    duration_seconds: duration,
+                    serial_number:    mfa_arn,
+                    token_code:       mfa_token_code,
+                )
+            rescue Aws::STS::Errors::AccessDenied
+                STDERR.puts 'MultiFactorAuthentication failed with invalid MFA ' \
+                            'one time pass code.'
+                exit -1 # rubocop:disable Lint/AmbiguousOperator
+            end
 
             @session = Credentials.create_from_sdk(session.credentials)
             logger.info("Storing session in keyring '#{keyring_key}'")

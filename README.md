@@ -83,6 +83,13 @@ xx:
 
 ## How to use?
 
+You need a key and secret for each `basic` role (a `parent`). You can set this
+in the environment variable or in the `~/.aws/credentials` file.
+
+It is recommended that you set this in the environment variable, the first time
+aws-assume-role runs it will place these values in the keystore so they are
+safe.
+
 ### In Environment variable
 
 ```
@@ -91,7 +98,9 @@ export AWS_SECRET_ACCESS_KEY=abcdefghijklmnopqrstuvwzyx1
 export AWS_DEFAULT_REGION=eu-west-1
 ```
 
-Then run the `aws-assume-role` command.
+Then run the `aws-assume-role` command. This will also store these credentials
+in the Keystore and you won't have to provide initial credentials for that
+parent again.
 
 ### in credentials file
 
@@ -140,4 +149,14 @@ aws-assume-role --profile yy_mgmt -- aws ec2 describe-instances --query "Reserva
 10.254.4.15
 10.254.0.10
 10.254.4.5
+```
+
+
+## Deleting keystore values
+
+Maybe you have a new keypair/
+
+```
+aws-assume-role --profile yy_mgmt --delete
+aws-assume-role --profile scalefactory --delete
 ```

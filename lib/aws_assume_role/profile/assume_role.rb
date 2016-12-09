@@ -110,6 +110,10 @@ module AWSAssumeRole
                 set_env if @options['set_environment']
             end
 
+            def remove
+                Credentials.new({}).delete_from_keyring(keyring_key)
+            end
+
         end
 
     end

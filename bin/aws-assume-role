@@ -20,8 +20,13 @@ optparse = OptionParser.new do |opts|
         options[:profile] = c
     end
 
+    options[:delete] = false
+    opts.on('-d', '--delete', 'Delete credentials from keystore. Must provide a profile name.') do
+        options[:delete] = true
+    end
+
     options[:debug] = false
-    opts.on('-d', '--debug', 'Enable debugging') do
+    opts.on('--debug', 'Enable debugging') do
         options[:debug] = true
     end
 
@@ -49,10 +54,14 @@ rescue Errno::ENOENT
     exit 1
 end
 
-
 if options[:profile] != false
     profile = AWSAssumeRole::Profile.get_by_name(options[:profile] )
-    profile.use
+
+    if options[:delete]
+        profile.remove
+    else
+        profile.use
+    end
 
     if options[:verbose]
         system('env | grep "AWS" | sort')
