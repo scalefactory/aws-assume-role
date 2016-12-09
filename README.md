@@ -4,6 +4,16 @@ This will get role credentials for you, managing 2FA devices, and set those
 credentials in environments. It stores the fetched credentials in Gnome Keyring
 or OSX Keychain so they are not readable from disk.
 
+## Install
+
+`gem install aws-assume-role`
+
+### Platform notes
+
+Gnome Keyring uses the [GirFFI](https://github.com/mvz/gir_ffi) bindings, which
+requires the introspection bindings to be installed (as well as gnome-keyring).
+`apt-get install gnome-keyring libgirepository1.0-dev` for Debian/Ubuntu.
+
 ## Config file
 
 Create a config file, the default is `~/.aws/assume.yaml`
@@ -124,9 +134,3 @@ aws-assume-role --profile yy_mgmt -- aws ec2 describe-instances --query "Reserva
 10.254.0.10
 10.254.4.5
 ```
-
-## Platform notes
-
-Gnome Keyring uses the [GirFFI](https://github.com/mvz/gir_ffi) bindings, which
-requires the introspection bindings to be installed (as well as gnome-keyring).
-`apt-get install gnome-keyring libgirepository1.0-dev` for Debian/Ubuntu.
