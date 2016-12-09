@@ -81,6 +81,10 @@ module AWSAssumeRole
                 @options['secret_access_key']
             end
 
+            def region
+                @options['region']
+            end
+
         end
 
     end

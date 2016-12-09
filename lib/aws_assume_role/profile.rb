@@ -27,10 +27,12 @@ module AWSAssumeRole
             AWSAssumeRole::Profile.implementations[type] = impl
         end
 
-        Dir.glob(
-            File.expand_path('profile/*.rb', File.dirname(__FILE__)),
-        ).each do |profile_class|
-            require profile_class
+        def self.load_profiles
+            Dir.glob(
+                File.expand_path('profile/*.rb', File.dirname(__FILE__)),
+            ).each do |profile_class|
+                require profile_class
+            end
         end
 
         def self.create(name, options)
@@ -86,6 +88,7 @@ module AWSAssumeRole
 
             ENV["#{prefix}AWS_ACCESS_KEY_ID"]     = access_key_id
             ENV["#{prefix}AWS_SECRET_ACCESS_KEY"] = secret_access_key
+            ENV["#{prefix}AWS_DEFAULT_REGION"]    = region
 
             return unless respond_to?(:session_token)
 
@@ -99,6 +102,10 @@ module AWSAssumeRole
         end
 
         def secret_access_key
+            raise NotImplementedError
+        end
+
+        def region
             raise NotImplementedError
         end
 
