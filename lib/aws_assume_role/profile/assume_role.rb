@@ -102,6 +102,10 @@ module AWSAssumeRole
                 role_credentials.session_token
             end
 
+            def region
+                @options['region']
+            end
+
             def use
                 set_env if @options['set_environment']
             end

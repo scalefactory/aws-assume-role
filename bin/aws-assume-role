@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.expand_path('../lib/', __FILE__)
+
+require 'optparse'
+require 'aws_assume_role'
+
+options = {}
+optparse = OptionParser.new do |opts|
+
+    options[:config] = "#{ENV['HOME']}/.aws/assume.yaml"
+    opts.on('-c', '--config file', 'Config file. defaults to' \
+                  '~/.aws/assume.yaml.') do |c|
+        options[:config] = c
+    end
+    
+    options[:profile] = false
+    opts.on('--profile name', 'Load the credentials for a profile into AWS ' \
+            'environment variables. If this is not specified the ') do |c|
+        options[:profile] = c
+    end
+
+    options[:debug] = false
+    opts.on('-d', '--debug', 'Enable debugging') do
+        options[:debug] = true
+    end
+
+    options[:verbose] = false
+    opts.on('-v', '--verbose', 'Get more words') do
+        options[:verbose] = true
+    end
+
+end
+
+optdata = optparse.parse!
+
+if options[:debug]
+    AWSAssumeRole::Profile.logger.level = Logger::DEBUG
+else
+    AWSAssumeRole::Profile.logger.level = Logger::WARN
+end
+
+
+begin
+    AWSAssumeRole::Profile.load_profiles
+    AWSAssumeRole::Profile.load_config_file(options[:config])
+rescue Errno::ENOENT
+    puts "No config file at options[:config]. Please create one!"
+    exit 1
+end
+
+
+if options[:profile] != false
+    profile = AWSAssumeRole::Profile.get_by_name(options[:profile] )
+    profile.use
+
+    if options[:verbose]
+        system('env | grep "AWS" | sort')
+    end
+end
+
+unless optdata.empty?
+    cmd = optdata.join(' ')
+    AWSAssumeRole::Profile.logger.debug "Executing Command '#{cmd}'"
+    system(cmd)
+end

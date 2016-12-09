@@ -48,6 +48,14 @@ module AWSAssumeRole
                         )
 
                     end
+                
+                elsif @options.key?('profile')
+
+                    logger.info("Loading profile #{@options['profile']} from ~/.aws/credentials")
+                    # Attempt to load with profile name suplied
+                    @sts_client = Aws::STS::Client.new(
+                        profile: @options['profile'],
+                    )
 
                 else
 
@@ -71,6 +79,10 @@ module AWSAssumeRole
 
             def secret_access_key
                 @options['secret_access_key']
+            end
+
+            def region
+                @options['region']
             end
 
         end

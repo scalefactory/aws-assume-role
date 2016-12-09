@@ -3,6 +3,7 @@ module AWSAssumeRole
 
     require 'keyring'
     require 'json'
+    require 'time'
 
     # Represents credentials, used for serialising into keychain
     class Credentials

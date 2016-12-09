@@ -3,8 +3,6 @@ source 'https://rubygems.org'
 
 gemspec
 
-# Temporarily adding these dependencies. Should be resolved once
-# https://github.com/jheiss/keyring/pull/7 is merged.
 case Gem::Platform.local.os
 when 'linux'
     gem 'gir_ffi-gnome_keyring', '~> 0.0.3'
