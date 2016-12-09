@@ -15,13 +15,20 @@ optparse = OptionParser.new do |opts|
     end
     
     options[:profile] = false
-    opts.on('--profile name', 'Load the credentials for a profile into AWS ' \
-            'environment variables. If this is not specified the ') do |c|
+    opts.on('-p', '--profile name', 'Load the credentials for a profile into AWS ' \
+            'environment variables.') do |c|
         options[:profile] = c
     end
 
+    options[:add] = false
+    opts.on('-a', '--add', 'Add basic/parent account credentials to keystore' \
+            'environment variables. Must provide a profile name') do |c|
+        options[:add] = c
+    end
+
     options[:delete] = false
-    opts.on('-d', '--delete', 'Delete credentials from keystore. Must provide a profile name.') do
+    opts.on('-d', '--delete', 'Delete credentials from keystore. Must ' \
+                  'provide a profile name.') do
         options[:delete] = true
     end
 
@@ -50,8 +57,8 @@ begin
     AWSAssumeRole::Profile.load_profiles
     AWSAssumeRole::Profile.load_config_file(options[:config])
 rescue Errno::ENOENT
-    puts "No config file at options[:config]. Please create one!"
-    exit 1
+    STDERR.puts "No config file at options[:config]. Please create one!"
+    exit -1 # rubocop:disable Lint/AmbiguousOperator
 end
 
 if options[:profile] != false
@@ -59,6 +66,8 @@ if options[:profile] != false
 
     if options[:delete]
         profile.remove
+    elsif options[:add]
+        profile.add
     else
         profile.use
     end

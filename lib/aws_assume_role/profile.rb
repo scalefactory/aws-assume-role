@@ -119,6 +119,10 @@ module AWSAssumeRole
             raise NotImplementedError
         end
 
+        def add
+            raise NotImplementedError
+        end
+
         def remove
             raise NotImplementedError
         end

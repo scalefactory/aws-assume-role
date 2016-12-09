@@ -69,9 +69,7 @@ module AWSAssumeRole
             def basic_credentials
                 logger.debug("Loading basic credentials")
                 # Check for profile creds in keyring first
-                keyring_key_name = "#{keyring_key}|basic"
-
-                @basic_credentials = Credentials.load_from_keyring(keyring_key_name)
+                @basic_credentials = Credentials.load_from_keyring("#{keyring_key}|basic")
 
                 return @basic_credentials unless @basic_credentials.nil?
 
@@ -93,7 +91,6 @@ module AWSAssumeRole
                 end
 
                 @basic_credentials = AWSAssumeRole::Credentials.new(creds)
-                @basic_credentials.store_in_keyring(keyring_key_name)
 
                 @basic_credentials
             end
@@ -115,6 +112,39 @@ module AWSAssumeRole
                 Credentials.new({}).delete_from_keyring("#{keyring_key}|basic")
             end
 
+            def add
+                if @options['profile']
+                    puts "WARNING: Storing credentials but a profile is specified and used for #{@name}"
+                end
+                if @options['access_key_id'] or @options['secret_access_key']
+                    puts "WARNING: Storing credentials but they are specified in config for #{@name}"
+                end
+
+                @basic_credentials = Credentials.load_from_keyring("#{keyring_key}|basic")
+                new_creds = get_credentials
+                @basic_credentials.delete_from_keyring(keyring_key) unless @basic_credentials.nil?
+                @basic_credentials = AWSAssumeRole::Credentials.new(new_creds)
+                @basic_credentials.store_in_keyring("#{keyring_key}|basic")
+            end
+
+            def get_credentials
+                puts "Enter your AWS_ACCESS_KEY_ID: "
+                id = STDIN.gets
+                id.chomp!
+                puts "Enter your AWS_SECRET_ACCESS_KEY: "
+                secret = STDIN.gets
+                secret.chomp!
+                puts "Enter a AWS Region:"
+                region = STDIN.gets
+                region.chomp!
+
+                creds = {
+                    :access_key_id     => id,
+                    :secret_access_key => secret,
+                    :region            => region,
+                }
+                creds
+            end
         end
 
     end

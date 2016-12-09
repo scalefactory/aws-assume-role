@@ -90,6 +90,24 @@ It is recommended that you set this in the environment variable, the first time
 aws-assume-role runs it will place these values in the keystore so they are
 safe.
 
+### Add the basic/profile credentials to keystore
+
+You can add the credentials that the system will use to assume roles to the
+keystore. This is the recommended way of using `aws-assume-role`.
+
+To add(or update) credentials use:
+
+```shell
+$ aws-assume-role --profile scalefactory --add
+Enter your AWS_ACCESS_KEY_ID: 
+1234567890010
+Enter your AWS_SECRET_ACCESS_KEY: 
+abcdefghijklmnopqrstuvwzyx1
+Enter a AWS Region:
+eu-west-1
+
+```
+
 ### In Environment variable
 
 ```
@@ -98,9 +116,7 @@ export AWS_SECRET_ACCESS_KEY=abcdefghijklmnopqrstuvwzyx1
 export AWS_DEFAULT_REGION=eu-west-1
 ```
 
-Then run the `aws-assume-role` command. This will also store these credentials
-in the Keystore and you won't have to provide initial credentials for that
-parent again.
+Then run the `aws-assume-role` command.
 
 ### in credentials file
 
@@ -154,7 +170,7 @@ aws-assume-role --profile yy_mgmt -- aws ec2 describe-instances --query "Reserva
 
 ## Deleting keystore values
 
-Maybe you have a new keypair/
+Maybe you have a new keypair?
 
 ```
 aws-assume-role --profile yy_mgmt --delete
