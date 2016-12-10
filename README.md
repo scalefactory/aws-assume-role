@@ -1,8 +1,35 @@
 # aws-assume-role
 
 This will get role credentials for you, managing 2FA devices, and set those
-credentials in environments. It stores the fetched credentials in Gnome Keyring
-or OSX Keychain so they are not readable from disk.
+credentials in environment variables then execute a provided command. It stores
+the fetched credentials in Gnome Keyring or OSX Keychain so they are not
+readable from disk.
+
+### Why?
+
+This keeps your credentials safe in the keystore, and they are set as
+environment variables for the duration and context of the executing command.
+This helps prevent credential leaking and theft, and means they aren't stored on
+disk as unencrypted files.
+
+It allows easy credential management and roll assumption with a 2FA/MFA device.
+
+For security and account management purposes we don't want to be managing users
+in multiple accounts, just centrally then allowing them to assume roles in
+other accounts.
+
+###
+
+Assumptions:
+
+- You have a parent/master account which you authenticate against with a 2FA
+  device.
+- You then assume a role in another account.
+
+This is easy to achieve in a web console, but you probably want to use tools
+like Terraform of AWS Cli. This makes using those tools easy, without having to
+constantly fetch and manage credentials for assumed roles, or provide
+users/access keys for each account.
 
 ## Install
 
