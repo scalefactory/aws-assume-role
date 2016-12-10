@@ -1,4 +1,5 @@
 # aws-assume-role
+[![Code Climate](https://codeclimate.com/github/scalefactory/aws-assume-role/badges/gpa.svg)](https://codeclimate.com/github/scalefactory/aws-assume-role)
 
 This will get role credentials for you, managing 2FA devices, and set those
 credentials in environments. It stores the fetched credentials in Gnome Keyring
