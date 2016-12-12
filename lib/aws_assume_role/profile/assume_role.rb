@@ -110,6 +110,16 @@ module AWSAssumeRole
                 set_env if @options['set_environment']
             end
 
+            def remove
+                Credentials.new({}).delete_from_keyring(keyring_key)
+            end
+
+            def add
+                STDERR.puts "You can't add credentials to an assume_role "\
+                    'just basic/parent accounts.'
+                exit -1 # rubocop:disable Lint/AmbiguousOperator
+            end
+
         end
 
     end

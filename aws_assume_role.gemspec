@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
     spec.name          = 'aws_assume_role'
-    spec.version       = '0.0.2'
+    spec.version       = '0.0.3'
     spec.authors       = ['Jon Topper', 'Jack Thomas']
     spec.email         = ['jon@scalefactory.com', 'jack@scalefactory.com']
 

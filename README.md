@@ -2,8 +2,35 @@
 [![Code Climate](https://codeclimate.com/github/scalefactory/aws-assume-role/badges/gpa.svg)](https://codeclimate.com/github/scalefactory/aws-assume-role)
 
 This will get role credentials for you, managing 2FA devices, and set those
-credentials in environments. It stores the fetched credentials in Gnome Keyring
-or OSX Keychain so they are not readable from disk.
+credentials in environment variables then execute a provided command. It stores
+the fetched credentials in Gnome Keyring or OSX Keychain so they are not
+readable from disk.
+
+### Why?
+
+This keeps your credentials safe in the keystore, and they are set as
+environment variables for the duration and context of the executing command.
+This helps prevent credential leaking and theft, and means they aren't stored on
+disk as unencrypted files.
+
+It allows easy credential management and roll assumption with a 2FA/MFA device.
+
+For security and account management purposes we don't want to be managing users
+in multiple accounts, just centrally then allowing them to assume roles in
+other accounts.
+
+###
+
+Assumptions:
+
+- You have a parent/master account which you authenticate against with a 2FA
+  device.
+- You then assume a role in another account.
+
+This is easy to achieve in a web console, but you probably want to use tools
+like Terraform of AWS Cli. This makes using those tools easy, without having to
+constantly fetch and manage credentials for assumed roles, or provide
+users/access keys for each account.
 
 ## Install
 
@@ -84,6 +111,31 @@ xx:
 
 ## How to use?
 
+You need a key and secret for each `basic` role (a `parent`). You can set this
+in the environment variable or in the `~/.aws/credentials` file.
+
+It is recommended that you set this in the environment variable, the first time
+aws-assume-role runs it will place these values in the keystore so they are
+safe.
+
+### Add the basic/profile credentials to keystore
+
+You can add the credentials that the system will use to assume roles to the
+keystore. This is the recommended way of using `aws-assume-role`.
+
+To add(or update) credentials use:
+
+```shell
+$ aws-assume-role --profile scalefactory --add
+Enter your AWS_ACCESS_KEY_ID: 
+1234567890010
+Enter your AWS_SECRET_ACCESS_KEY: 
+abcdefghijklmnopqrstuvwzyx1
+Enter a AWS Region:
+eu-west-1
+
+```
+
 ### In Environment variable
 
 ```
@@ -141,4 +193,14 @@ aws-assume-role --profile yy_mgmt -- aws ec2 describe-instances --query "Reserva
 10.254.4.15
 10.254.0.10
 10.254.4.5
+```
+
+
+## Deleting keystore values
+
+Maybe you have a new keypair?
+
+```
+aws-assume-role --profile yy_mgmt --delete
+aws-assume-role --profile scalefactory --delete
 ```
