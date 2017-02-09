@@ -1,5 +1,5 @@
-# AWSAssumeRole
-module AWSAssumeRole
+# AwsAssumeRole
+module AwsAssumeRole
     require "keyring"
     require "json"
     require "time"
@@ -12,7 +12,7 @@ module AWSAssumeRole
             logger.debug("Keyring: load '#{key}'")
 
             keyring = Keyring.new
-            json_session = keyring.get_password("AWSAssumeRole", key)
+            json_session = keyring.get_password("AwsAssumeRole", key)
 
             unless json_session
                 logger.info("No JSON session data in keyring")
@@ -29,12 +29,12 @@ module AWSAssumeRole
             hash[:expiration] = Time.parse(hash[:expiration]) unless hash[:expiration].nil?
 
             logger.debug("Loaded #{hash}")
-            AWSAssumeRole::Credentials.new(hash)
+            AwsAssumeRole::Credentials.new(hash)
         end
 
         def self.create_from_sdk(object)
             raise TypeError unless object.is_a?(Aws::STS::Types::Credentials)
-            AWSAssumeRole::Credentials.new(object.to_h)
+            AwsAssumeRole::Credentials.new(object.to_h)
         end
 
         @credentials = nil
@@ -66,13 +66,13 @@ module AWSAssumeRole
         def store_in_keyring(key)
             keyring = Keyring.new
             logger.debug("Keyring: store '#{key}' with #{@credentials.to_json}")
-            keyring.set_password("AWSAssumeRole", key, @credentials.to_json)
+            keyring.set_password("AwsAssumeRole", key, @credentials.to_json)
         end
 
         def delete_from_keyring(key)
             keyring = Keyring.new
             logger.debug("Keyring: delete '#{key}'")
-            keyring.delete_password("AWSAssumeRole", key)
+            keyring.delete_password("AwsAssumeRole", key)
         end
 
         def expired?

@@ -1,5 +1,5 @@
 # Mixin to provide global logging object
-module AWSAssumeRole
+module AwsAssumeRole
     module Logging
         require "logger"
 

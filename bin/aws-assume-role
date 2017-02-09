@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
 
-$LOAD_PATH.unshift File.expand_path("../lib/", __FILE__)
-
 require "optparse"
-require "aws_assume_role"
+require_relative "../lib/aws_assume_role"
 
 options = {}
 optparse = OptionParser.new do |opts|
@@ -44,22 +42,22 @@ end
 
 optdata = optparse.parse!
 
-AWSAssumeRole::Profile.logger.level = if options[:debug]
+AwsAssumeRole::Profile.logger.level = if options[:debug]
                                           Logger::DEBUG
                                       else
                                           Logger::WARN
                                       end
 
 begin
-    AWSAssumeRole::Profile.load_profiles
-    AWSAssumeRole::Profile.load_config_file(options[:config])
+    AwsAssumeRole::Profile.load_profiles
+    AwsAssumeRole::Profile.load_config_file(options[:config])
 rescue Errno::ENOENT
     STDERR.puts "No config file at options[:config]. Please create one!"
     exit -1 # rubocop:disable Lint/AmbiguousOperator
 end
 
 if options[:profile] != false
-    profile = AWSAssumeRole::Profile.get_by_name(options[:profile])
+    profile = AwsAssumeRole::Profile.get_by_name(options[:profile])
 
     if options[:delete]
         profile.remove
@@ -74,6 +72,6 @@ end
 
 unless optdata.empty?
     cmd = optdata.join(" ")
-    AWSAssumeRole::Profile.logger.debug "Executing Command '#{cmd}'"
+    AwsAssumeRole::Profile.logger.debug "Executing Command '#{cmd}'"
     system(cmd)
 end

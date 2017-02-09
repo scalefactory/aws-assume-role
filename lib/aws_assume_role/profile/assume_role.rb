@@ -1,5 +1,5 @@
-# AWSAssumeRole
-module AWSAssumeRole
+# AwsAssumeRole
+module AwsAssumeRole
     class Profile
         # A Profile implementation for assuming roles using STS
         class AssumeRole < Profile
@@ -29,7 +29,7 @@ module AWSAssumeRole
             def sts_client
                 return @sts_client unless @sts_client.nil?
 
-                parent = AWSAssumeRole::Profile.get_by_name(@options["parent"])
+                parent = AwsAssumeRole::Profile.get_by_name(@options["parent"])
 
                 @sts_client = Aws::STS::Client.new(
                     access_key_id:     parent.session.access_key_id,

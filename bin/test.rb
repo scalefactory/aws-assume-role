@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 
-$LOAD_PATH.unshift File.expand_path("../lib/", __FILE__)
-
-require "aws_assume_role"
+require_relative "../lib/aws_assume_role"
 
 test_profiles_yaml = <<EOF
 ---
@@ -30,10 +28,10 @@ tf_test:
 
 EOF
 
-AWSAssumeRole::Profile.logger.level = Logger::DEBUG
-AWSAssumeRole::Profile.parse_config(test_profiles_yaml)
+AwsAssumeRole::Profile.logger.level = Logger::DEBUG
+AwsAssumeRole::Profile.parse_config(test_profiles_yaml)
 
-p = AWSAssumeRole::Profile.get_by_name("tf_test")
+p = AwsAssumeRole::Profile.get_by_name("tf_test")
 p.use
 
 system('env | grep "AWS" | sort')

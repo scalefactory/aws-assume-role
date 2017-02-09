@@ -1,5 +1,5 @@
-# AWSAssumeRole
-module AWSAssumeRole
+# AwsAssumeRole
+module AwsAssumeRole
     class Profile
         # A Profile implementation which aggregates other profiles.
         # Used to setenv for multiple credentials, but with different

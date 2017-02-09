@@ -1,5 +1,5 @@
-# AWSAssumeRole
-module AWSAssumeRole
+# AwsAssumeRole
+module AwsAssumeRole
     class Profile
         # Profile implementation which takes credentials from either
         # passed options, from the environment, or from .aws/credentials
@@ -84,7 +84,7 @@ module AWSAssumeRole
                                      @options["region"]
                                  end
 
-                @basic_credentials = AWSAssumeRole::Credentials.new(creds)
+                @basic_credentials = AwsAssumeRole::Credentials.new(creds)
 
                 @basic_credentials
             end
@@ -117,7 +117,7 @@ module AWSAssumeRole
                 @basic_credentials = Credentials.load_from_keyring("#{keyring_key}|basic")
                 new_creds = fetch_credentials
                 @basic_credentials.delete_from_keyring(keyring_key) unless @basic_credentials.nil?
-                @basic_credentials = AWSAssumeRole::Credentials.new(new_creds)
+                @basic_credentials = AwsAssumeRole::Credentials.new(new_creds)
                 @basic_credentials.store_in_keyring("#{keyring_key}|basic")
             end
 

@@ -1,6 +1,7 @@
 require "keyring"
+require_relative "logging"
 
-module AWSAssumeRole
+module AwsAssumeRole
     # Base Profile superclass
     class Profile
         include Logging
@@ -20,14 +21,14 @@ module AWSAssumeRole
         def self.register_implementation(type, impl)
             logger.info("Registering implementation " \
                         "for type '#{type}': #{impl}")
-            AWSAssumeRole::Profile.implementations[type] = impl
+            AwsAssumeRole::Profile.implementations[type] = impl
         end
 
         def self.load_profiles
             Dir.glob(
                 File.expand_path("profile/*.rb", File.dirname(__FILE__)),
             ).each do |profile_class|
-                require profile_class
+                require_relative profile_class
             end
         end
 
@@ -68,7 +69,7 @@ module AWSAssumeRole
             profiles.each do |name, options|
                 options["config_file"] = config_file
                 options["name"]        = name
-                AWSAssumeRole::Profile.create(name, options)
+                AwsAssumeRole::Profile.create(name, options)
             end
         end
 
@@ -143,7 +144,7 @@ module AWSAssumeRole
 
             # See if there's a non-exipred session cached in the keyring
 
-            @session = AWSAssumeRole::Credentials.load_from_keyring(keyring_key)
+            @session = AwsAssumeRole::Credentials.load_from_keyring(keyring_key)
 
             unless @session.nil?
 
@@ -185,5 +186,6 @@ module AWSAssumeRole
 
             @session
         end
+        load_profiles
     end
 end
