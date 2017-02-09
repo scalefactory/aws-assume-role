@@ -3,24 +3,14 @@ module AwsAssumeRole
     module Logging
         require "logger"
 
-        class << self
+        module ClassMethods
             def logger
                 @logger ||= Logger.new($stderr)
             end
-
-            attr_writer :logger
         end
 
         def self.included(base)
-            class << base
-                def logger # rubocop:disable Lint/NestedMethodDefinition
-                    Logging.logger
-                end
-            end
-        end
-
-        def logger
-            Logging.logger
+            base.extend ClassMethods
         end
     end
 end
