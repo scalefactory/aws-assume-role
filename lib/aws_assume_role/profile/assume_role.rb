@@ -1,14 +1,11 @@
 # AWSAssumeRole
 module AWSAssumeRole
-
     class Profile
-
         # A Profile implementation for assuming roles using STS
         class AssumeRole < Profile
-
             include Logging
 
-            register_implementation('assume_role', self)
+            register_implementation("assume_role", self)
 
             @sts_client = nil
             @role       = nil
@@ -17,25 +14,22 @@ module AWSAssumeRole
 
             def default_options
                 {
-                    'parent'   => 'default',
-                    'duration' => 3600,
+                    "parent"   => "default",
+                    "duration" => 3600,
                 }
             end
 
             def initialize(name, options = {})
-
-                require 'aws-sdk'
+                require "aws-sdk"
 
                 @options = default_options.merge(options)
                 @name    = name
-
             end
 
             def sts_client
-
                 return @sts_client unless @sts_client.nil?
 
-                parent = AWSAssumeRole::Profile.get_by_name(@options['parent'])
+                parent = AWSAssumeRole::Profile.get_by_name(@options["parent"])
 
                 @sts_client = Aws::STS::Client.new(
                     access_key_id:     parent.session.access_key_id,
@@ -50,11 +44,9 @@ module AWSAssumeRole
                 STDERR.puts 'No region was given. \
                     Set one in the credentials file or environment'
                 exit -1 # rubocop:disable Lint/AmbiguousOperator
-
             end
 
             def role_credentials
-
                 # Check for non-expired session cached here
 
                 unless @role_credentials.nil?
@@ -76,9 +68,9 @@ module AWSAssumeRole
                 end
 
                 role = sts_client.assume_role(
-                    role_arn:          @options['role_arn'],
+                    role_arn:          @options["role_arn"],
                     role_session_name: name, # use something else?
-                    duration_seconds:  @options['duration'],
+                    duration_seconds:  @options["duration"],
                 )
 
                 @role_credentials =
@@ -87,7 +79,6 @@ module AWSAssumeRole
                 @role_credentials.store_in_keyring(keyring_key)
 
                 @role_credentials
-
             end
 
             def access_key_id
@@ -103,11 +94,11 @@ module AWSAssumeRole
             end
 
             def region
-                @options['region']
+                @options["region"]
             end
 
             def use
-                set_env if @options['set_environment']
+                set_env if @options["set_environment"]
             end
 
             def remove
@@ -116,12 +107,9 @@ module AWSAssumeRole
 
             def add
                 STDERR.puts "You can't add credentials to an assume_role "\
-                    'just basic/parent accounts.'
+                    "just basic/parent accounts."
                 exit -1 # rubocop:disable Lint/AmbiguousOperator
             end
-
         end
-
     end
-
 end

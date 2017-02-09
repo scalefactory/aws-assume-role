@@ -1,12 +1,31 @@
 ---
+require: rubocop-rspec
 AllCops:
     DisplayCopNames: true
 
 Metrics/MethodLength:
     Enabled: false
 
+Metrics/AbcSize:
+    Enabled: false
+
+Metrics/BlockLength:
+    Enabled: false
+
+Metrics/ClassLength:
+    Enabled: false
+
+Metrics/CyclomaticComplexity:
+    Enabled: false
+
+Metrics/PerceivedComplexity:
+    Enabled: false
+
 Style/IndentationWidth:
     Width: 4
+
+RSpec/ExampleLength:
+    Enabled: false
 
 Style/TrailingCommaInArguments:
     EnforcedStyleForMultiline: comma
@@ -14,24 +33,23 @@ Style/TrailingCommaInArguments:
 Style/TrailingCommaInLiteral:
     EnforcedStyleForMultiline: comma
 
-Style/EmptyLinesAroundModuleBody:
-    EnforcedStyle: empty_lines
-
-Style/EmptyLinesAroundClassBody:
-    EnforcedStyle: empty_lines
-
-Style/EmptyLinesAroundMethodBody:
+Style/ClassAndModuleChildren:
     Enabled: false
 
-Style/EmptyLinesAroundBlockBody:
+Style/Documentation:
     Enabled: false
 
-Metrics/ClassLength:
+Style/VariableName:
     Enabled: false
 
-Metrics/AbcSize:
+Style/StringLiterals:
+    EnforcedStyle: double_quotes
+
+Style/MethodMissing:
     Enabled: false
 
-Metrics/PerceivedComplexity:
+Style/TrivialAccessors:
     Enabled: false
 
+Metrics/LineLength:
+  Max: 140

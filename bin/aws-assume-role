@@ -1,57 +1,54 @@
 #!/usr/bin/env ruby
 
-$LOAD_PATH.unshift File.expand_path('../lib/', __FILE__)
+$LOAD_PATH.unshift File.expand_path("../lib/", __FILE__)
 
-require 'optparse'
-require 'aws_assume_role'
+require "optparse"
+require "aws_assume_role"
 
 options = {}
 optparse = OptionParser.new do |opts|
-
     options[:config] = "#{ENV['HOME']}/.aws/assume.yaml"
-    opts.on('-c', '--config file', 'Config file. defaults to' \
-                  '~/.aws/assume.yaml.') do |c|
+    opts.on("-c", "--config file", "Config file. defaults to" \
+                  "~/.aws/assume.yaml.") do |c|
         options[:config] = c
     end
-    
+
     options[:profile] = false
-    opts.on('-p', '--profile name', 'Load the credentials for a profile into AWS ' \
-            'environment variables.') do |c|
+    opts.on("-p", "--profile name", "Load the credentials for a profile into AWS " \
+            "environment variables.") do |c|
         options[:profile] = c
     end
 
     options[:add] = false
-    opts.on('-a', '--add', 'Add basic/parent account credentials to keystore' \
-            'environment variables. Must provide a profile name') do |c|
+    opts.on("-a", "--add", "Add basic/parent account credentials to keystore" \
+            "environment variables. Must provide a profile name") do |c|
         options[:add] = c
     end
 
     options[:delete] = false
-    opts.on('-d', '--delete', 'Delete credentials from keystore. Must ' \
-                  'provide a profile name.') do
+    opts.on("-d", "--delete", "Delete credentials from keystore. Must " \
+                  "provide a profile name.") do
         options[:delete] = true
     end
 
     options[:debug] = false
-    opts.on('--debug', 'Enable debugging') do
+    opts.on("--debug", "Enable debugging") do
         options[:debug] = true
     end
 
     options[:verbose] = false
-    opts.on('-v', '--verbose', 'Get more words') do
+    opts.on("-v", "--verbose", "Get more words") do
         options[:verbose] = true
     end
-
 end
 
 optdata = optparse.parse!
 
-if options[:debug]
-    AWSAssumeRole::Profile.logger.level = Logger::DEBUG
-else
-    AWSAssumeRole::Profile.logger.level = Logger::WARN
-end
-
+AWSAssumeRole::Profile.logger.level = if options[:debug]
+                                          Logger::DEBUG
+                                      else
+                                          Logger::WARN
+                                      end
 
 begin
     AWSAssumeRole::Profile.load_profiles
@@ -62,7 +59,7 @@ rescue Errno::ENOENT
 end
 
 if options[:profile] != false
-    profile = AWSAssumeRole::Profile.get_by_name(options[:profile] )
+    profile = AWSAssumeRole::Profile.get_by_name(options[:profile])
 
     if options[:delete]
         profile.remove
@@ -72,13 +69,11 @@ if options[:profile] != false
         profile.use
     end
 
-    if options[:verbose]
-        system('env | grep "AWS" | sort')
-    end
+    system('env | grep "AWS" | sort') if options[:verbose]
 end
 
 unless optdata.empty?
-    cmd = optdata.join(' ')
+    cmd = optdata.join(" ")
     AWSAssumeRole::Profile.logger.debug "Executing Command '#{cmd}'"
     system(cmd)
 end

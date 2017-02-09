@@ -1,28 +1,23 @@
 # AWSAssumeRole
 module AWSAssumeRole
-
     class Profile
-
         # Profile implementation which takes credentials from either
         # passed options, from the environment, or from .aws/credentials
         # file (per the standard behaviour of Aws::STS::Client)
         class Basic < Profile
-
             include Logging
 
-            register_implementation('basic', self)
+            register_implementation("basic", self)
 
             @sts_client = nil
             @options    = nil
             @name       = nil
 
             def initialize(name, options = {})
-
-                require 'aws-sdk'
+                require "aws-sdk"
 
                 @options = options
                 @name    = name
-
             end
 
             def sts_client
@@ -30,12 +25,12 @@ module AWSAssumeRole
 
                 return @sts_client unless @sts_client.nil?
 
-                if @options.key?('profile')
+                if @options.key?("profile")
 
                     logger.info("Loading profile #{@options['profile']} from ~/.aws/credentials")
                     # Attempt to load with profile name suplied
                     @sts_client = Aws::STS::Client.new(
-                        profile: @options['profile'],
+                        profile: @options["profile"],
                     )
 
                 elsif access_key_id && secret_access_key
@@ -63,7 +58,6 @@ module AWSAssumeRole
                 STDERR.puts 'No region was given. \
                     Set one in the credentials file or environment'
                 exit -1 # rubocop:disable Lint/AmbiguousOperator
-
             end
 
             def basic_credentials
@@ -74,21 +68,21 @@ module AWSAssumeRole
                 return @basic_credentials unless @basic_credentials.nil?
 
                 creds = {
-                    :access_key_id     => ENV['AWS_ACCESS_KEY_ID'],
-                    :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY'],
+                    access_key_id: ENV["AWS_ACCESS_KEY_ID"],
+                    secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
                 }
 
-                if creds[:access_key_id].nil? or creds[:secret_access_key].nil?
-                    STDERR.puts 'No AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY ' \
-                                'found in the environment.'
+                if creds[:access_key_id].nil? || creds[:secret_access_key].nil?
+                    STDERR.puts "No AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY " \
+                                "found in the environment."
                     exit -1 # rubocop:disable Lint/AmbiguousOperator
                 end
 
-                unless @options['region'].nil?
-                    creds[:region] = @options['region']
-                else
-                    creds[:region] = ENV['AWS_DEFAULT_REGION']
-                end
+                creds[:region] = if @options["region"].nil?
+                                     ENV["AWS_DEFAULT_REGION"]
+                                 else
+                                     @options["region"]
+                                 end
 
                 @basic_credentials = AWSAssumeRole::Credentials.new(creds)
 
@@ -96,15 +90,15 @@ module AWSAssumeRole
             end
 
             def access_key_id
-                @options['access_key_id'] || basic_credentials.access_key_id
+                @options["access_key_id"] || basic_credentials.access_key_id
             end
 
             def secret_access_key
-                @options['secret_access_key'] || basic_credentials.secret_access_key
+                @options["secret_access_key"] || basic_credentials.secret_access_key
             end
 
             def region
-                @options['region'] || basic_credentials.region
+                @options["region"] || basic_credentials.region
             end
 
             def remove
@@ -113,21 +107,21 @@ module AWSAssumeRole
             end
 
             def add
-                if @options['profile']
+                if @options["profile"]
                     puts "WARNING: Storing credentials but a profile is specified and used for #{@name}"
                 end
-                if @options['access_key_id'] or @options['secret_access_key']
+                if @options["access_key_id"] || @options["secret_access_key"]
                     puts "WARNING: Storing credentials but they are specified in config for #{@name}"
                 end
 
                 @basic_credentials = Credentials.load_from_keyring("#{keyring_key}|basic")
-                new_creds = get_credentials
+                new_creds = fetch_credentials
                 @basic_credentials.delete_from_keyring(keyring_key) unless @basic_credentials.nil?
                 @basic_credentials = AWSAssumeRole::Credentials.new(new_creds)
                 @basic_credentials.store_in_keyring("#{keyring_key}|basic")
             end
 
-            def get_credentials
+            def fetch_credentials
                 puts "Enter your AWS_ACCESS_KEY_ID: "
                 id = STDIN.gets
                 id.chomp!
@@ -139,14 +133,12 @@ module AWSAssumeRole
                 region.chomp!
 
                 creds = {
-                    :access_key_id     => id,
-                    :secret_access_key => secret,
-                    :region            => region,
+                    access_key_id: id,
+                    secret_access_key: secret,
+                    region: region,
                 }
                 creds
             end
         end
-
     end
-
 end
