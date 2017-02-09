@@ -102,7 +102,7 @@ module AwsAssumeRole
             end
 
             def remove
-                Credentials.new({}).delete_from_keyring(keyring_key)
+                Credentials.new.delete_from_keyring(keyring_key)
             end
 
             def add
