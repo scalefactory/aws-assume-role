@@ -19,8 +19,14 @@ It allows easy credential management and role assumption with a 2FA/MFA device.
 
 For more information on role assumption, see the AWS documentation.
 
+Requirements
+------------
+*   Ruby ≥ 2.1
+*   OS X KeyChain or GNOME Keyring
+
 Install
 -------
+
 ```sh
 gem install aws_assume_role
 ```
@@ -62,9 +68,13 @@ Now that you've set up permanent credentials in your OS credential store, you ca
 set up a role that you will assume in every day use:
 
 ``` sh
-> aws-assume-role configure role -p company-dev --source-profile company-sso  --role-arn=arn:aws:iam::000000000001:role/ViewEC2 --role-session-name=growthsmith
-````
+> aws-assume-role configure role -p company-dev --source-profile company-sso  \
+--role-arn=arn:aws:iam::000000000001:role/ViewEC2 --role-session-name=growthsmith \
+--mfa-serial automatic
+```
+`--mfa-serial automatic` will look up your default attached multi-factor device, but you can specify a specific ARN.
 
+More options are available in the application help.
 Use `> aws-assume-role --help ` for help at any time.
 
 Running applications
@@ -73,12 +83,20 @@ Running applications
 You can run another application using
 
 ``` sh
-aws-assume-role run -p company-dev -- aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateIpAddress" --output=text
+aws-assume-role run -p company-dev -- aws ec2 describe-instances --query \
+"Reservations[*].Instances[*].PrivateIpAddress" --output=text
 10.254.4.20
 10.254.4.15
 10.254.0.10
 10.254.4.5
 ```
+
+Because we've enabled MFA, aws-assume-role will ask for your MFA token:
+```
+Please provide an MFA token
+000000
+```
+
 
 Deleting a profile
 ------------------
@@ -88,7 +106,6 @@ If a set of credentials key needs revoking, or the profile isn't relevant anymor
 Please type the name of the profile, i.e. company-sso , to continue deletion.
 company-sso
 Profile company-sso deleted
-
 ```
 
 Migrating AWS CLI profiles
@@ -158,12 +175,16 @@ where options is a hash with the following symbol keys:
 
 `aws_assume_role` resolves credentials in almost the same way as the AWS SDK, i.e.:
 
-static credentials --> environment variables --> configured profiles
+```no-highlight
+static credentials ⟶ environment variables ⟶ configured profiles
+```
 
 Any of the above may get chained to do MFA or role assumption, or both,
 in the following order:
 
-second factor --> role assumption (look up source profile and check for 2FA) --> ecs/instance profile
+```no-highlight
+second factor ⟶ role assumption (look up source profile and check for 2FA) ⟶ ecs/instance profile
+```
 
 These are the same as the AWS SDK equivalents whereever possible. The command line help will give an explanation of the rest.
 
@@ -197,7 +218,7 @@ This library and program is distributed under the
 
 ```no-highlight
 Copyright 2017. The Scale Factory Ltd. All Rights Reserved.
-Portions copyright 2013. Amazon Web services, Inc. All Rights Reserved.
+Portions Copyright 2013. Amazon Web Services, Inc. All Rights Reserved.
 
 licensed under the apache license, version 2.0 (the "license");
 you may not use this file except in compliance with the license.
