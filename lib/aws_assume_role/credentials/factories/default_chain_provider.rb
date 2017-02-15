@@ -31,7 +31,7 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
     option :no_profile, default: proc { false }
     option :source_profile, Dry::Types["strict.string"].optional, default: proc { nil }
     option :instance_profile_credentials_retries, Dry::Types["strict.int"], default: proc { 0 }
-    option :instance_profile_credentials_timeout, Dry::Types["coercible.float"], default: proc { 0.0001 }
+    option :instance_profile_credentials_timeout, Dry::Types["coercible.float"], default: proc { 1 }
 
     def initialize(*options)
         if options[0].is_a? Seahorse::Client::Configuration::DefaultResolver
@@ -40,19 +40,29 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
             super(*options)
         end
         @profile_name ||= @profile
+        @original_profile = @profile
     end
 
-    def resolve
-        resolve_credentials(:credential_provider, true)
-        return @credentials if @credentials && @credentials.set? && !use_mfa && !role_arn
-        resolve_credentials(:second_factor_provider, true)
-        return @credentials if @credentials && @credentials.set? && !role_arn
-        resolve_credentials(:role_assumption_provider, true)
-        return @credentials if @credentials && @credentials.set?
-        @credentials || Aws::Credentials.new(nil, nil, nil)
+    def resolve(nil_with_role_not_set: false, explicit_default_profile: false)
+        resolve_final_credentials(explicit_default_profile)
+        nil_creds = Aws::Credentials.new(nil, nil, nil)
+        return nil_creds if (nil_with_role_not_set &&
+                             @role_arn &&
+                             @credentials.credentials.session_token.nil?) || @credentials.nil?
+        @credentials
     end
 
     private
+
+    def resolve_final_credentials(explicit_default_profile = false)
+        resolve_credentials(:credential_provider, true, explicit_default_profile)
+        return @credentials if @credentials && @credentials.set? && !use_mfa && !role_arn
+        resolve_credentials(:second_factor_provider, true, explicit_default_profile)
+        return @credentials if @credentials && @credentials.set? && !role_arn
+        resolve_credentials(:role_assumption_provider, true, explicit_default_profile)
+        return @credentials if @credentials && @credentials.set?
+        Aws::Credentials.new(nil, nil, nil)
+    end
 
     def initialize_with_seahorse(resolver)
         keys = resolver.resolve
@@ -69,7 +79,7 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
         )
     end
 
-    def resolve_credentials(type, break_if_successful = false)
+    def resolve_credentials(type, break_if_successful = false, explicit_default_profile = false)
         factories_to_try = Repository.factories[type]
         factories_to_try.each do |x|
             options = to_h
@@ -77,7 +87,9 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
             factory = x.new(options)
             @region ||= factory.region
             @profile ||= factory.profile
+            @role_arn ||= factory.role_arn
             next unless factory.credentials && factory.credentials.set?
+            next if explicit_default_profile && (@profile == "default") && (@profile != @original_profile)
             @credentials ||= factory.credentials
             break if break_if_successful
         end

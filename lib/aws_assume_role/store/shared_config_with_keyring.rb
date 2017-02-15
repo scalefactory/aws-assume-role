@@ -63,6 +63,11 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
         resolve_region(@parsed_config, prof_cfg)
     end
 
+    def profile_role(profile_name)
+        prof_cfg = @parsed_config[profile_key(profile_name)]
+        resolve_arn(@parsed_config, prof_cfg)
+    end
+
     def determine_profile(options)
         ret = options[:profile_name]
         ret ||= ENV["AWS_PROFILE"]
@@ -86,6 +91,13 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
         return prof_cfg["region"] if prof_cfg.key? "region"
         source_cfg = cfg[prof_cfg["source_profile"]]
         cfg[prof_cfg["source_profile"]]["region"] if source_cfg && source_cfg.key?("region")
+    end
+
+    def resolve_arn(cfg, prof_cfg)
+        return unless prof_cfg && cfg
+        return prof_cfg["role_arn"] if prof_cfg.key? "role_arn"
+        source_cfg = cfg[prof_cfg["source_profile"]]
+        cfg[prof_cfg["source_profile"]]["role_arn"] if source_cfg && source_cfg.key?("role_arn")
     end
 
     def assume_role_from_profile(cfg, profile, opts)

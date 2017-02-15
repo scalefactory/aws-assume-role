@@ -20,12 +20,13 @@ class AwsAssumeRole::Credentials::Factories::AssumeRole < AwsAssumeRole::Credent
 
     def try_with_profile(options)
         if AwsAssumeRole.shared_config.config_enabled?
-            profile = options[:profile]
-            region = options[:region]
+            @profile = options[:profile]
+            @region = options[:region]
             @credentials = assume_role_with_profile(options[:profle], options[:region])
         end
-        @credentials = assume_role_with_profile(profile, region)
-        @region = AwsAssumeRole.shared_config.profile_region(region)
+        @credentials = assume_role_with_profile(@profile, @region)
+        @region ||= AwsAssumeRole.shared_config.profile_region(@profiles)
+        @role_arn ||= AwsAssumeRole.shared_config.profile_role(@profile)
     end
 
     def assume_role_with_profile(prof, region)
