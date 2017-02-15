@@ -1,10 +1,9 @@
 require_relative "includes"
-require_relative "validations"
 require_relative "../../profile_configuration"
 
 class AwsAssumeRole::Cli::Actions::AbstractAction
     include AwsAssumeRole
-    include AwsAssumeRole::Cli::Actions::Validations
+    include AwsAssumeRole::Types
     include Ui
     CommandSchema = proc { raise "CommandSchema Not implemented" }
 
@@ -36,7 +35,7 @@ class AwsAssumeRole::Cli::Actions::AbstractAction
 
     def validate_options(options)
         command_schema = self.class::CommandSchema
-        Dry::Validation.Schema do
+        ::Dry::Validation.Schema do
             configure { config.messages = :i18n }
             instance_eval(&command_schema)
         end.call(options)
