@@ -24,15 +24,17 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
     end
 
     def save_profile(profile_name, hash)
-        merged_config = configuration["profile #{profile_name}"].merge hash.to_h
+        ckey = "profile #{profile_name}"
+        merged_config = configuration[ckey].deep_symbolize_keys.merge hash.to_h
         merged_config[:mfa_serial] = merged_config[:serial_number] if merged_config[:serial_number]
         credentials = Aws::Credentials.new(merged_config.delete(:aws_access_key_id),
                                            merged_config.delete(:aws_secret_access_key))
         semaphore.synchronize do
-            Keyring.save_credentials profile_name, credentials
-            configuration["profile #{profile_name}"] = merged_config.compact
-            configuration["profile #{profile_name}"].delete(:aws_access_key_id)
-            configuration["profile #{profile_name}"].delete(:aws_secret_access_key)
+            Keyring.save_credentials profile_name, credentials if credentials.set?
+            merged_config = merged_config.slice :region, :role_arn, :mfa_serial, :source_profile,
+                                                :role_session_name, :external_id, :duration_seconds
+            configuration.delete_section ckey
+            configuration[ckey] = merged_config.compact
             save_configuration
         end
     end
