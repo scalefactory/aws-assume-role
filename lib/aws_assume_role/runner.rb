@@ -22,10 +22,6 @@ class AwsAssumeRole::Runner
 
     private
 
-    def nested_credentials
-        return nil if options[:config]
-    end
-
     def process_credentials
         cred_env = {
             "AWS_ACCESS_KEY_ID" => credentials.credentials.access_key_id,
