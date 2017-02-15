@@ -17,22 +17,6 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
         load_config_file
     end
 
-    def configuration_section(name)
-        creds = begin
-                    credentials(profile: name)
-                rescue
-                    {}
-                end
-
-        parsed_config = @parsed_config[name] || {}
-
-        validate_profile_exists(name)
-        {
-            section: parsed_config,
-            credentials: creds,
-        }
-    end
-
     def credentials(opts = {})
         p = opts[:profile] || @profile_name
         validate_profile_exists(p) if credentials_present?
