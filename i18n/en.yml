@@ -91,11 +91,16 @@ en:
         NoSuchProfileError: Profile %s not found in shared configuration.
         MissingCredentialsError: No credentials found!
         rules:
+            profile:
+                filled?: --profile must be specified.
             role-arn:
                 format?: "--role-arn must be specified as an ARN in the format `arn:aws:iam::account-id:role/role-name`"
+                filled?: --role-arn is required.
             serial-number:
                 format?: "--mfa-serial must be specified as an ARN in the format `arn:aws:iam::account-id:mfa/virtual-device-name`"
+                filled?: --mfa-serial is required.
             region:
                 format?: "--region must be a valid AWS Standard, China or GovCloud region"
+                filled?: --region is required
             role_specification:
                 filled?: "Either specify --profile OR (--role-arn AND --role-session-name, or neither)"
