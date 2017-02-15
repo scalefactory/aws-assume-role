@@ -170,8 +170,11 @@ These are the same as the AWS SDK equivalents whereever possible. The command li
 ### Monkeypatching the AWS SDK
 You can also override the standard AWS SDK credential resolution system by including the following:
 ```
-require "aws_assume_role/core_ext/aws/credential_provider_chain"
+require "aws_assume_role/core_ext/aws-sdk/credential_provider_chain"
 ```
+
+Using any standard AWS SDK for Ruby v2 client will then use aws_assume_role for credential resolution.
+
 
 Please do not use this in production systems.
 
