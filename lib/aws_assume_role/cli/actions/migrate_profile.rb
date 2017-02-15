@@ -6,7 +6,6 @@ class AwsAssumeRole::Cli::Actions::MigrateProfile < AwsAssumeRole::Cli::Actions:
     end
 
     def act_on(config)
-        require "pry"
         AwsAssumeRole.shared_config.migrate_profile config.profile
         out format(t("commands.configure.saved"), config[:profile], AwsAssumeRole.shared_config.config_path)
     rescue KeyError, Aws::Errors::NoSuchProfileError
