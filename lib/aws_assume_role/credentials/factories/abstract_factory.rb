@@ -28,12 +28,4 @@ class AwsAssumeRole::Credentials::Factories::AbstractFactory
         return unless @type && @priority
         Repository.register_factory(self, @type, @priority)
     end
-
-    def mfa_completed
-        broadcast(:mfa_completed)
-    end
-
-    def role_assumption_completed
-        broadcast(:role_assumption_completed)
-    end
 end
