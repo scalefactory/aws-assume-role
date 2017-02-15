@@ -22,7 +22,7 @@ module AwsAssumeRole::Ui
 
     def validation_errors_to_s(result)
         text = result.errors.keys.map do |k|
-            "#{k} #{result.errors[k].join(';')}"
+            result.errors[k].join(";")
         end.join(" ")
         text
     end
@@ -47,9 +47,6 @@ module AwsAssumeRole::Ui
         return result.to_h[variable_name] if result.success?
         show_validation_errors result
         ask_with_validation variable_name, question, &block
-
-        #    rescue
-        #        ask_with_validation question, &block
     end
 
     def t(*options)

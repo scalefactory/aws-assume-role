@@ -11,6 +11,10 @@ class AwsAssumeRole::Cli::Actions::DeleteProfile < AwsAssumeRole::Cli::Actions::
         AwsAssumeRole.shared_config.delete_profile config.profile
         out format t("commands.delete.completed"), config.profile
     rescue KeyError, Aws::Errors::NoSuchProfileError
-        error format t("commands.delete.not_found"), config.profile
+        error format(t("errors.NoSuchProfileError"), config.profile)
+        raise
+    rescue Aws::Errors::MissingCredentialsError
+        error t("errors.MissingCredentialsError")
+        raise
     end
 end

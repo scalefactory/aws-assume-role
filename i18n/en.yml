@@ -88,12 +88,14 @@ en:
         name_to_delete: Please type the name of the profile, i.e. %s , to continue deletion.
     program_description: "A tool for AWS credential management"
     errors:
+        NoSuchProfileError: Profile %s not found in shared configuration.
+        MissingCredentialsError: No credentials found!
         rules:
             role-arn:
-                format?: "must be specified as an ARN in the format `arn:aws:iam::account-id:role/role-name`"
+                format?: "--role-arn must be specified as an ARN in the format `arn:aws:iam::account-id:role/role-name`"
             serial-number:
-                format?: "must be specified as an ARN in the format `arn:aws:iam::account-id:mfa/virtual-device-name`"
+                format?: "--mfa-serial must be specified as an ARN in the format `arn:aws:iam::account-id:mfa/virtual-device-name`"
             region:
-                format?: "must be a valid AWS Standard, China or GovCloud region"
-            to_use_a_role:
-                filled?: "--role-arn, --role-session-name must all be specified"
+                format?: "--region must be a valid AWS Standard, China or GovCloud region"
+            role_specification:
+                filled?: "Either specify --profile OR (--role-arn AND --role-session-name, or neither)"

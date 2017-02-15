@@ -25,6 +25,10 @@ class AwsAssumeRole::Cli::Actions::Run < AwsAssumeRole::Cli::Actions::AbstractAc
                        credentials: credentials)
         end
     rescue KeyError, Aws::Errors::NoSuchProfileError
-        error "Cannot find profile"
+        error format(t("errors.NoSuchProfileError"), config.profile)
+        raise
+    rescue Aws::Errors::MissingCredentialsError
+        error t("errors.MissingCredentialsError")
+        raise
     end
 end

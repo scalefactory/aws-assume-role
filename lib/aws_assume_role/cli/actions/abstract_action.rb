@@ -19,8 +19,9 @@ class AwsAssumeRole::Cli::Actions::AbstractAction
 
     def try_for_credentials(config)
         @provider ||= AwsAssumeRole::Credentials::Factories::DefaultChainProvider.new(config.to_h)
-        creds = @provider.resolve
+        creds = @provider.resolve(nil_with_role_not_set: true)
         return creds unless creds.nil?
+    rescue NoMethodError
         error "Cannot find any credentials"
         exit 404
     end

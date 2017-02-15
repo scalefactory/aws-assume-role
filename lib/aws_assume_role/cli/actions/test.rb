@@ -22,6 +22,10 @@ class AwsAssumeRole::Cli::Actions::Test < AwsAssumeRole::Cli::Actions::AbstractA
         identity = client.get_caller_identity
         out format(t("commands.test.output"), identity.account, identity.arn, identity.user_id)
     rescue KeyError, Aws::Errors::NoSuchProfileError
-        error "Cannot find profile"
+        error format(t("errors.NoSuchProfileError"), config.profile)
+        raise
+    rescue Aws::Errors::MissingCredentialsError
+        error t("errors.MissingCredentialsError")
+        raise
     end
 end

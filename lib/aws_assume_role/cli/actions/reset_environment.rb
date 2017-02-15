@@ -39,6 +39,10 @@ class AwsAssumeRole::Cli::Actions::ResetEnvironment < AwsAssumeRole::Cli::Action
         str << "# #{pastel.yellow t(shell_strings.fetch(:footer, 'commands.set_environment.shells.others'))}"
         puts str
     rescue KeyError, Aws::Errors::NoSuchProfileError
-        error "Cannot find profile"
+        error format(t("errors.NoSuchProfileError"), config.profile)
+        raise
+    rescue Aws::Errors::MissingCredentialsError
+        error t("errors.MissingCredentialsError")
+        raise
     end
 end
