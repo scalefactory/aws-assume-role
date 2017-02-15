@@ -152,6 +152,9 @@ get to the AWS console for that role/account using
 > aws-assume-role console -p company-sso
 ```
 
+`aws-assume-role` will first attempt to log in and get a federated UI link, and
+otherwise fall back to the "switch role" page.
+
 Using inside Ruby
 -----------------
 To get a set of credentials via the OS credential store, or using console-based MFA, use
