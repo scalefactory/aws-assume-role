@@ -8,7 +8,7 @@ class AwsAssumeRole::Credentials::Factories::AbstractFactory
     include AwsAssumeRole::Logging
 
     Dry::Types.register_class(Aws::SharedCredentials)
-    attr_reader :credentials
+    attr_reader :credentials, :region
 
     def initialize(_options)
         raise "Not implemented"

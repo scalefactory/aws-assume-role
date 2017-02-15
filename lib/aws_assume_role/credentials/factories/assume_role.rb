@@ -25,6 +25,7 @@ class AwsAssumeRole::Credentials::Factories::AssumeRole < AwsAssumeRole::Credent
             @credentials = assume_role_with_profile(options[:profle], options[:region])
         end
         @credentials = assume_role_with_profile(profile, region)
+        @region = AwsAssumeRole.shared_config.profile_region(region)
     end
 
     def assume_role_with_profile(prof, region)

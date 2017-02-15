@@ -21,7 +21,7 @@ class AwsAssumeRole::Cli::Actions::Run < AwsAssumeRole::Cli::Actions::AbstractAc
         credentials = try_for_credentials config.to_h
         unless config.args.empty?
             Runner.new(config.args,
-                       environment: { "AWS_DEFAULT_REGION" => config.region },
+                       environment: { "AWS_DEFAULT_REGION" => resolved_region },
                        credentials: credentials)
         end
     rescue KeyError, Aws::Errors::NoSuchProfileError

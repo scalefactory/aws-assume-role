@@ -5,12 +5,9 @@ class AwsAssumeRole::Credentials::Factories::Shared < AwsAssumeRole::Credentials
     priority 20
 
     def initialize(options = {})
-        profile = options[:profile]
-        @credentials = if profile
-                           AwsAssumeRole::Vendored::Aws::SharedCredentials.new(profile_name: profile)
-                       else
-                           AwsAssumeRole::Vendored::Aws::SharedCredentials.new(profile_name: "default")
-                       end
+        profile = options[:profile] || "default"
+        @credentials = AwsAssumeRole::Vendored::Aws::SharedCredentials.new(profile_name: profile)
+        @region = AwsAssumeRole.shared_config.profile_region(region)
     rescue Aws::Errors::NoSuchProfileError
         nil
     end

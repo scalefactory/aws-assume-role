@@ -8,7 +8,9 @@ class AwsAssumeRole::Credentials::Factories::Environment < AwsAssumeRole::Creden
         key =    %w(AWS_ACCESS_KEY_ID AMAZON_ACCESS_KEY_ID AWS_ACCESS_KEY)
         secret = %w(AWS_SECRET_ACCESS_KEY AMAZON_SECRET_ACCESS_KEY AWS_SECRET_KEY)
         token =  %w(AWS_SESSION_TOKEN AMAZON_SESSION_TOKEN)
+        region = %w(AWS_DEFAULT_REGION)
         @credentials = Aws::Credentials.new(envar(key), envar(secret), envar(token))
+        @region = envar(region)
     end
 
     def envar(keys)

@@ -18,10 +18,15 @@ class AwsAssumeRole::Cli::Actions::AbstractAction
     private
 
     def try_for_credentials(config)
-        creds = AwsAssumeRole::Credentials::Factories::DefaultChainProvider.new(config.to_h).resolve
+        @provider ||= AwsAssumeRole::Credentials::Factories::DefaultChainProvider.new(config.to_h)
+        creds = @provider.resolve
         return creds unless creds.nil?
         error "Cannot find any credentials"
         exit 404
+    end
+
+    def resolved_region
+        @provider.region
     end
 
     def validate_options(options)

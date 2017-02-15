@@ -70,6 +70,11 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
         save_profile(profile_name, configuration["profile #{profile_name}"])
     end
 
+    def profile_region(profile_name)
+        prof_cfg = @parsed_config[profile_key(profile_name)]
+        resolve_region(@parsed_config, prof_cfg)
+    end
+
     private
 
     def resolve_profile_name(opts)
@@ -85,6 +90,13 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
         end
     end
 
+    def resolve_region(cfg, prof_cfg)
+        return unless prof_cfg && cfg
+        return prof_cfg["region"] if prof_cfg.key? "region"
+        source_cfg = cfg[prof_cfg["source_profile"]]
+        cfg[prof_cfg["source_profile"]]["region"] if source_cfg && source_cfg.key?("region")
+    end
+
     def assume_role_from_profile(cfg, profile, opts)
         prof_cfg = cfg[profile]
         return unless cfg && prof_cfg
@@ -97,7 +109,7 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
                 opts[:role_arn] ||= prof_cfg["role_arn"]
                 opts[:external_id] ||= prof_cfg["external_id"]
                 opts[:serial_number] ||= prof_cfg["mfa_serial"]
-                opts[:region] ||= prof_cfg["region"] if prof_cfg.key? "region"
+                opts[:region] ||= profile_region(profile)
                 if opts[:serial_number]
                     mfa_opts = { credentials: opts[:credentials], region: opts[:region], serial_number: opts[:serial_number] }
                     mfa_creds = mfa_session(cfg, opts[:source_profile], mfa_opts)
@@ -119,6 +131,8 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
         prof_cfg = cfg[profile]
         return unless cfg && prof_cfg
         opts[:serial_number] ||= prof_cfg["mfa_serial"]
+        opts[:source_profile] ||= prof_cfg["source_profile"]
+        opts[:region] ||= profile_region(profile)
         return unless opts[:serial_number]
         opts[:credentials] ||= credentials(profile: opts[:profile])
         AwsAssumeRole::Credentials::Providers::MfaSessionCredentials.new(opts)

@@ -74,9 +74,10 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
         factories_to_try.each do |x|
             options = to_h
             options[:credentials] = credentials if credentials && credentials.set?
-            creds = x.new(options).credentials
-            next unless creds && creds.set?
-            @credentials = creds
+            factory = x.new(options)
+            @region ||= factory.region
+            next unless factory.credentials && factory.credentials.set?
+            @credentials ||= factory.credentials
             break if break_if_successful
         end
     end
