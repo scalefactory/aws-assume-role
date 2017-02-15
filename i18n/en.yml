@@ -62,6 +62,13 @@ en:
             desc: Migrate a store to secure storage.
             not_found: "Cannot find profile %s. Try running `aws-assume-role list`"
             saved: Profile %s migrated within %s
+        test:
+            desc: Check that credentials work
+            output: |
+                Logged in as:
+                    User: %s
+                    Account: %s
+                    ARN: %s
     options:
         aws_access_key_id: "Enter the AWS Access Key ID to use for this profile"
         aws_secret_access_key: "Enter the AWS Secret Access Key to use for this profile"

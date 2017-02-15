@@ -1,4 +1,5 @@
 require "i18n"
+require "aws-sdk"
 require "dry-validation"
 require "active_support/core_ext/hash/compact"
 require "active_support/core_ext/hash/keys"
