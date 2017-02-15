@@ -16,6 +16,7 @@ class AwsAssumeRole::ProfileConfiguration
     option :role_arn, Dry::Types["strict.string"].optional, default: proc { nil }
     option :role_session_name, Dry::Types["strict.string"].optional, default: proc { nil }
     option :serial_number, Dry::Types["strict.string"].optional, default: proc { nil }
+    option :mfa_serial, Dry::Types["strict.string"].optional, default: proc { nil }
     option :use_mfa, default: proc { false }
     option :no_profile, default: proc { false }
     option :shell_type, Dry::Types["strict.string"].optional, default: proc { nil }
