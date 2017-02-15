@@ -1,206 +1,187 @@
-# aws-assume-role
-[![Code Climate](https://codeclimate.com/github/scalefactory/aws-assume-role/badges/gpa.svg)](https://codeclimate.com/github/scalefactory/aws-assume-role)
+aws-assume-role
+---------------
 
-This will get role credentials for you, managing 2FA devices, and set those
-credentials in environment variables then execute a provided command. It stores
-the fetched credentials in Gnome Keyring or OSX Keychain so they are not
-readable from disk.
+aws-assume-role is a utility intended for developer and operator environments
+who need to use 2FA and role assumption to access AWS services.
 
-### Why?
+aws-assume-role can store both AWS access keys and ephemeral session tokens in
+OS credential vaults - Keychain on OSX and Seahorse on Gnome.
 
-This keeps your credentials safe in the keystore, and they are set as
+Why?
+---
+
+This keeps your credentials safe in the keystore, and exist as
 environment variables for the duration and context of the executing command.
 This helps prevent credential leaking and theft, and means they aren't stored on
 disk as unencrypted files.
 
-It allows easy credential management and roll assumption with a 2FA/MFA device.
+It allows easy credential management and role assumption with a 2FA/MFA device.
 
-For security and account management purposes we don't want to be managing users
-in multiple accounts, just centrally then allowing them to assume roles in
-other accounts.
+For more information on role assumption, see the AWS documentation.
 
-###
-
-Assumptions:
-
-- You have a parent/master account which you authenticate against with a 2FA
-  device.
-- You then assume a role in another account.
-
-This is easy to achieve in a web console, but you probably want to use tools
-like Terraform of AWS Cli. This makes using those tools easy, without having to
-constantly fetch and manage credentials for assumed roles, or provide
-users/access keys for each account.
-
-## Install
-
-`gem install aws_assume_role`
+Install
+-------
+```sh
+gem install aws_assume_role
+```
 
 ### Platform notes
 
 Gnome Keyring uses the [GirFFI](https://github.com/mvz/gir_ffi) bindings, which
-requires the introspection bindings to be installed (as well as gnome-keyring).
-`apt-get install gnome-keyring libgirepository1.0-dev` for Debian/Ubuntu.
+require introspection bindings as well as Gnone Keyring, by installing one of the following packages:
 
-## Config file
+``` sh
+# Debian/Ubuntu
+apt-get install gnome-keyring libgirepository1.0-dev
 
-Create a config file, the default is `~/.aws/assume.yaml`
+# Fedora
+dnf install gobject-introspection-devel
 
-```yaml
----
-default:
-    set_environment: false
-    # credentials come from .aws/credentials default profile or environment
-
-scalefactory:
-    # if this profile is passed don't set the environment credentials
-    set_environment: false
-    # load credentials from sf_sso profile in .aws/credentials
-    profile: sf_sso
-
-
-# These use the scalefactory profile above
-xx_mgmt:
-    parent: scalefactory
-    set_environment: true
-    type: assume_role
-    region: eu-west-1
-    role_arn: arn:aws:iam::123456789012:role/RoleNameHere
-
-xx_test:
-    parent: scalefactory
-    set_environment: true
-    type: assume_role
-    role_arn: arn:aws:iam::123456789012:role/RoleNameHere
-
-xx:
-    type: list
-    set_environment: true
-    list:
-     - name:       xx_test
-       env_prefix: TEST_
-     - name:       xx_mgmt
-       env_prefix: MGMT_
-
-
-# These use the default above
-yy_mgmt:
-   set_environment: true
-   type: assume_role
-   role_arn: arn:aws:iam::123456789012:role/RoleNameHere
-
-yy_test:
-   set_environment: true
-   type: assume_role
-   role_arn: arn:aws:iam::123456789012:role/RoleNameHere
-
-xx:
-   type: list
-   set_environment: true
-   list:
-    - name:       xx_test
-      env_prefix: TEST_
-    - name:       xx_mgmt
-      env_prefix: MGMT_
-
-
+# CentOS
+yum install gobject-introspection-devel
 ```
+Setup
+-----
+aws-assume-role works best if you also store permanent credentials in your keystore:
 
-
-
-
-## How to use?
-
-You need a key and secret for each `basic` role (a `parent`). You can set this
-in the environment variable or in the `~/.aws/credentials` file.
-
-It is recommended that you set this in the environment variable, the first time
-aws-assume-role runs it will place these values in the keystore so they are
-safe.
-
-### Add the basic/profile credentials to keystore
-
-You can add the credentials that the system will use to assume roles to the
-keystore. This is the recommended way of using `aws-assume-role`.
-
-To add(or update) credentials use:
-
-```shell
-$ aws-assume-role --profile scalefactory --add
-Enter your AWS_ACCESS_KEY_ID: 
-1234567890010
-Enter your AWS_SECRET_ACCESS_KEY: 
-abcdefghijklmnopqrstuvwzyx1
-Enter a AWS Region:
+``` sh
+> aws-assume-role configure
+Enter the profile name to save into configuration
+company-sso
+Enter the AWS region you would like to default to:
 eu-west-1
-
+Enter the AWS Access Key ID to use for this profile:
+1234567890010
+Enter the AWS Secret Access Key to use for this profile:
+abcdefghijklmnopqrstuvwzyx1
+Profile `company-sso` saved to '/home/growthsmith/.aws/config'
 ```
 
-### In Environment variable
+### Configuring roles
+Now that you've set up permanent credentials in your OS credential store, you can now
+set up a role that you will assume in every day use:
 
-```
-export AWS_ACCESS_KEY_ID=1234567890010
-export AWS_SECRET_ACCESS_KEY=abcdefghijklmnopqrstuvwzyx1
-export AWS_DEFAULT_REGION=eu-west-1
-```
+``` sh
+> aws-assume-role configure role -p company-dev --source-profile company-sso  --role-arn=arn:aws:iam::000000000001:role/ViewEC2 --role-session-name=growthsmith
+````
 
-Then run the `aws-assume-role` command.
+Use `> aws-assume-role --help ` for help at any time.
 
-### in credentials file
+Running applications
+--------------------
 
-I have the following entry in `~/.aws/credentials`:
+You can run another application using
 
-```
-[sf_sso]
-aws_access_key_id = 1234567890010
-aws_secret_access_key = abcdefghijklmnopqrstuvwzyx1
-region = eu-west-1
-```
-
-### Environment Variables Set
-
-If `region` is defined for an `assume_role` type the environment variable
-`AWS_DEFAULT_REGION` will be set with that value, otherwise it will be left
-blank.
-
-`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN` will all
-be set.
-
-If a type of `list` is called the environment variables will all be set with the
-provided prefix, e.g.
-
-```
-MGMT_AWS_ACCESS_KEY_ID=122343534535435435
-MGMT_AWS_DEFAULT_REGION=eu-west-1
-MGMT_AWS_SECRET_ACCESS_KEY=+4324234234235454353535353535
-MGMT_AWS_SESSION_TOKEN=F353453535345345345345345353534
-TEST_AWS_ACCESS_KEY_ID=53454353453453453534
-TEST_AWS_SECRET_ACCESS_KEY=3534534534534534534534
-TEST_AWS_SESSION_TOKEN=5435345353453
-```
-
-If you use the `-v` or `--verbose` flag it will print out any AWS environment
-variables set at the end of the action.
-
-### Calling another application
-
-You can call another application by passing a bare double dash followed by the
-target command.
-
-```
-aws-assume-role --profile yy_mgmt -- aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateIpAddress" --output=text 
+``` sh
+aws-assume-role run -p company-dev -- aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateIpAddress" --output=text
 10.254.4.20
 10.254.4.15
 10.254.0.10
 10.254.4.5
 ```
 
-
-## Deleting keystore values
-
-Maybe you have a new keypair?
+Deleting a profile
+------------------
+If a set of credentials key needs revoking, or the profile isn't relevant anymore:
+``` sh
+> aws-assume-role delete -p company-sso
+Please type the name of the profile, i.e. company-sso , to continue deletion.
+company-sso
+Profile company-sso deleted
 
 ```
-aws-assume-role --profile yy_mgmt --delete
-aws-assume-role --profile scalefactory --delete
+
+Migrating AWS CLI profiles
+------------------
+It's better to revoke the existing keys and generate new ones. We try to overwrite the plaintext configuration
+file with random data, but this does not take care of ~/.aws/credentials and does not account for SSD wear
+levelling or copy-on-write snapshots.
 ```
+aws-assume-role migrate -p company-sso
+Profile 'company-sso' migrated to keyring.
+```
+
+Exporting environment variables
+-------------------------------
+You can use a session token in your shell any supported application without using
+`aws-assume-role`.
+
+You can also remove environment variables after finishing using the reset command.
+
+#### Bourne Shell and friends
+``` sh
+>  eval `./bin/aws-assume-role environment set -p company-dev`
+>  eval `./bin/aws-assume-role environment reset`
+```
+
+#### fish
+``` fish
+> set creds (bin/aws-assume-role environment set -s fish -p company-dev); eval $creds; set -e creds
+> set creds (bin/aws-assume-role environment reset -s fish); eval $creds; set -e creds
+```
+
+#### PowerShell
+``` powershell
+> aws-assume-role environment set -s powershell -p company-dev | invoke-expression
+> aws-assume-role environment reset -s powershell | invoke-expression
+```
+
+Launch the AWS console
+---------------------
+Given that `aws-assume-role` has knowledge of your role ARNs via AWS CLI profiles, you can
+get to the AWS console for that role/account using
+
+``` sh
+> aws-assume-role console -p company-sso
+```
+
+Using inside Ruby
+-----------------
+To get a set of credentials via the OS credential store, or using console-based MFA, use
+the following:
+```
+require "aws_assume_role"
+
+AwsAssumeRole::DefaultProvider.new(options).resolve
+```
+where options is a hash with the following symbol keys:
+*   `access_key_id`
+*   `secret_access_key`
+*   `session_token`
+*   `persist_session`
+*   `duration_seconds`
+*   `role_arn`
+*   `role_session_name`
+*   `serial_number`
+*   `source_profile`
+*   `region`
+
+`aws_assume_role` resolves credentials in almost the same way as the AWS SDK, i.e.:
+
+static credentials --> environment variables --> configured profiles
+
+Any of the above may get chained to do MFA or role assumption, or both,
+in the following order:
+
+second factor --> role assumption (look up source profile and check for 2FA) --> ecs/instance profile
+
+These are the same as the AWS SDK equivalents whereever possible. The command line help will give an explanation of the rest.
+
+### Monkeypatching the AWS SDK
+You can also override the standard AWS SDK credential resolution system by including the following:
+```
+require "aws_assume_role/core_ext/aws/credential_provider_chain"
+```
+
+Please do not use this in production systems.
+
+Other keyring backends
+----------------------
+`aws-assume-role` uses the Keyring gem for secure secret storage. By default, this will use OS X keycain
+or GNOME Keyring. To load alternatives, set the following environment variables:
+
+*   `AWS_ASSUME_ROLE_KEYRING_BACKEND`: Which backend to use, as the name of the Ruby class.
+*   `AWS_ASSUME_ROLE_KEYRING_PLUGIN` : Name of a gem to load.
+
+These are also available in Ruby as the `AwsAssumeRole.Config.backend_plugin` and
+`AwsAssumeRole.Config.backend_plugin` attributes.

@@ -1,16 +1,24 @@
-# Mixin to provide global logging object
-module AwsAssumeRole
-    module Logging
-        require "logger"
-
-        module ClassMethods
-            def logger
-                @logger ||= Logger.new($stderr)
+require_relative "includes"
+require_relative "configuration"
+module AwsAssumeRole::Logging
+    module ClassMethods
+        def logger
+            @logger ||= begin
+                logger = Logger.new($stderr)
+                logger.level = AwsAssumeRole::Config.log_level
+                logger
             end
         end
+    end
 
-        def self.included(base)
-            base.extend ClassMethods
+    module InstanceMethods
+        def logger
+            self.class.logger
         end
+    end
+
+    def self.included(base)
+        base.extend ClassMethods
+        base.include InstanceMethods
     end
 end

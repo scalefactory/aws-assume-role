@@ -4,3 +4,4 @@ vendor/
 pkg/
 Gemfile.lock
 spec/reports/
+tags

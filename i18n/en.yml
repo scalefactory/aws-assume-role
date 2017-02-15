@@ -1,0 +1,92 @@
+en:
+    commands:
+        configure:
+            desc: Configure AWS
+            long_desc: |
+                Configure  AWS  profiles. If this command is run with no arguments,
+                you will be prompted for configuration values such as your  AWS  Access
+                Key  Id  and you AWS Secret Access Key.  You can configure a named pro-
+                file using the --profile argument.  If your config file does not  exist
+                (the default location is ~/.aws/config), the AWS CLI will create it for
+                you.  To keep an existing value, hit enter when prompted for the value.
+                When  you  are prompted for information, the current value will be dis-
+                played in [brackets].  If the config item has no value, it be displayed
+                as  [None].  Note that the configure command only work with values from
+                the config file.  It does not use any configuration values  from  envi-
+                ronment variables or the IAM role.
+
+                Note:  The  values  you  provide  for the AWS Access Key ID and the AWS
+                Secret Access Key will be written to your keyring backend.
+            saved: Profile %s saved to %s
+        console:
+            desc: Launch the AWS console to switch to the profile role.
+            long_desc: |
+                Looks up the Role ARN in the profile, constructs the AWS console
+                URL and launches your browser with it. It's a convenience, doesn't
+                use any of the credentials.
+        set_environment:
+            desc: Export assumed credentials to your shell environment.
+            long_desc: |
+                Set up environment variables in your shell so that you can run AWS CLI
+                or other apps using those credentials without running aws-assume-role
+                again.
+                Supports Bourne, CSh, Fish and PowerShell.
+            shells:
+                powershell: Use `aws-assume-role environment set -s powershell -p <profile_name> | Invoke-Expression` to load into environment
+                others: Use `eval aws-assume-role environment set -p <profile_name>` to load into environment
+                fish: Use `set creds (bin/aws-assume-role environment set -s fish); eval $creds; set -e creds`
+        reset_environment:
+            desc: Delete AWS environment variables.
+            long_desc: |
+                Cleans up your shell environment by removing the following environment variables:
+                    AWS_ACCESS_KEY_ID
+                    AWS_SECRET_ACCESS_KEY
+                    AWS_DEFAULT_REGION
+                    AWS_PROFILE
+                    AWS_ASSUME_ROLE_LOG_LEVEL
+                    GLI_DEBUG
+                Supports Bourne, CSh, Fish and PowerShell.
+            shells:
+                powershell: Use `aws-assume-role environment reset -s powershell -p <profile_name> | Invoke-Expression` to load into environment
+                others: Use `eval aws-assume-role environment reset -p <profile_name>` to load into environment
+                fish: Use `set creds (bin/aws-assume-role environment reset -s fish); eval $creds; set -e creds`
+        run:
+            desc: Run a program with credentials set in the environment.
+        delete:
+            desc: Delete a profile
+            completed: "Profile %s deleted"
+            not_found: "Cannot find profile %s. Try running `aws-assume-role list`"
+        list:
+            desc: List configured profiles
+        migrate:
+            desc: Migrate a store to secure storage.
+            not_found: "Cannot find profile %s. Try running `aws-assume-role list`"
+            saved: Profile %s migrated within %s
+    options:
+        aws_access_key_id: "Enter the AWS Access Key ID to use for this profile"
+        aws_secret_access_key: "Enter the AWS Secret Access Key to use for this profile"
+        region: Enter the AWS region you would like to default to
+        profile_name: Enter the profile name to save into configuration
+        mfa_token:
+            first_time: "Please provide an MFA token"
+            other_times: "Credentials have expired, please provide another MFA"
+        default_role: "A default role to assume (leave blank to not use)"
+        external_id: String provided by the external account holder to uniquely identify you.
+        source_profile: Which profile to use to assume this role.
+        role_session_name: Name to uniquely identify your session
+        mfa_serial: The identification number of the MFA device. Leave blank to determine dynamically at run time.
+        role_arn: The Amazon Resource Name (ARN) of the role to assume.
+        duration_seconds: Default session length
+        shell_type: What type of shell to use.
+        name_to_delete: Please type the name of the profile, i.e. %s , to continue deletion.
+    program_description: "A tool for AWS credential management"
+    errors:
+        rules:
+            role-arn:
+                format?: "must be specified as an ARN in the format `arn:aws:iam::account-id:role/role-name`"
+            serial-number:
+                format?: "must be specified as an ARN in the format `arn:aws:iam::account-id:mfa/virtual-device-name`"
+            region:
+                format?: "must be a valid AWS Standard, China or GovCloud region"
+            to_use_a_role:
+                filled?: "--role-arn, --role-session-name must all be specified"
