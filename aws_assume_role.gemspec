@@ -11,8 +11,8 @@ Gem::Specification.new do |spec|
                          "and store them securely using Gnome Keyring "\
                          "or OSX keychain"
     spec.summary       = "Manage AWS STS credentials with MFA"
-    spec.homepage      = "https://github.com/scalefactory/aws_assume_role"
-    spec.license       = "MIT"
+    spec.homepage      = "https://github.com/scalefactory/aws-assume-role"
+    spec.license       = "Apache-2.0"
 
     spec.files         = `git ls-files -z`.split("\x0").reject { |f|
         f.match(%r{^(test|spec|features)/})
