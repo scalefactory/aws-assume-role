@@ -17,8 +17,8 @@ module AwsAssumeRole::Cli
             r.flag ["role-session-name"], desc: t("options.role_session_name")
             r.flag ["role-arn"], desc: t("options.role_arn")
             r.flag ["mfa-serial"], desc: t("options.mfa_serial")
-            r.flag ["region"], desc: t("options.region"), optional: true
-            r.flag ["external-id"], desc: t("options.external_id"), optional: true
+            r.flag ["region"], desc: t("options.region")
+            r.flag ["external-id"], desc: t("options.external_id")
             r.flag ["duration-seconds"], desc: t("options.duration_seconds"), default_value: 3600
 
             r.action do |global_options, options, args|
