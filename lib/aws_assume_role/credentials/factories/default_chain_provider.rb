@@ -48,7 +48,7 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
         resolve_credentials(:second_factor_provider, true)
         return @credentials if @credentials && @credentials.set? && !role_arn
         resolve_credentials(:role_assumption_provider, true)
-        return @credentials if @credentials.set?
+        return @credentials if @credentials && @credentials.set?
         @credentials || Aws::Credentials.new(nil, nil, nil)
     end
 
