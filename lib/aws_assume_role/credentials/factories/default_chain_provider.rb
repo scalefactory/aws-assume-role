@@ -76,6 +76,7 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
             options[:credentials] = credentials if credentials && credentials.set?
             factory = x.new(options)
             @region ||= factory.region
+            @profile ||= factory.profile
             next unless factory.credentials && factory.credentials.set?
             @credentials ||= factory.credentials
             break if break_if_successful

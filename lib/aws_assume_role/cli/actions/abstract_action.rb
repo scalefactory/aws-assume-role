@@ -29,6 +29,10 @@ class AwsAssumeRole::Cli::Actions::AbstractAction
         @provider.region
     end
 
+    def resolved_profile
+        @provider.profile
+    end
+
     def validate_options(options)
         command_schema = self.class::CommandSchema
         Dry::Validation.Schema do

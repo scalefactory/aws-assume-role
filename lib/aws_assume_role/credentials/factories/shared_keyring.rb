@@ -6,9 +6,9 @@ class AwsAssumeRole::Credentials::Factories::SharedKeyring < AwsAssumeRole::Cred
     priority 19
 
     def initialize(options = {})
-        profile = options[:profile] || "default"
-        @credentials = AwsAssumeRole::Credentials::Providers::SharedKeyringCredentials.new(profile_name: profile)
-        @region = AwsAssumeRole.shared_config.profile_region(profile)
+        @profile = options[:profile] || "default"
+        @credentials = AwsAssumeRole::Credentials::Providers::SharedKeyringCredentials.new(profile_name: @profile)
+        @region = AwsAssumeRole.shared_config.profile_region(@profile)
     rescue Aws::Errors::NoSuchProfileError
         nil
     end

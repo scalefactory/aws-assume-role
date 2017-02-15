@@ -4,12 +4,13 @@ class AwsAssumeRole::Credentials::Factories::Static < AwsAssumeRole::Credentials
     type :credential_provider
     priority 0
 
-    def initialize(access_key_id: nil, secret_access_key: nil, region: nil, session_token: nil, **)
+    def initialize(options = {})
         @credentials = Aws::Credentials.new(
-            access_key_id,
-            secret_access_key,
-            session_token,
+            options[:access_key_id],
+            options[:secret_access_key],
+            options[:session_token],
         )
-        @region = region
+        @region = options[:region]
+        @profile = options[:profile]
     end
 end

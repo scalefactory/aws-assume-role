@@ -8,6 +8,8 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
     include AwsAssumeRole::Store
     include AwsAssumeRole::Logging
 
+    attr_reader :parsed_config
+
     def initialize(options = {})
         super(options)
         @config_enabled = true
@@ -75,11 +77,14 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
         resolve_region(@parsed_config, prof_cfg)
     end
 
-    private
-
-    def resolve_profile_name(opts)
-        opts[:profile] || @profile_name
+    def determine_profile(options)
+        ret = options[:profile_name]
+        ret ||= ENV["AWS_PROFILE"]
+        ret ||= "default"
+        ret
     end
+
+    private
 
     def profile_key(profile)
         logger.debug "About to lookup #{profile}"

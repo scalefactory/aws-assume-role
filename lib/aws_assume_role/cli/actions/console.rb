@@ -14,7 +14,8 @@ class AwsAssumeRole::Cli::Actions::Console < AwsAssumeRole::Cli::Actions::Abstra
     end
 
     def try_role_arn(config)
-        resolved_role_arn = config.role_arn || AwsAssumeRole.shared_config.configuration_section(config.profile)[:section]["role_arn"]
+        profile = AwsAssumeRole.shared_config.determine_profile(profile_name: config.profile)
+        resolved_role_arn = config.role_arn || AwsAssumeRole.shared_config.parsed_config[profile]["role_arn"]
         return unless resolved_role_arn
         components = resolved_role_arn.split(":")
         account = components[4]
