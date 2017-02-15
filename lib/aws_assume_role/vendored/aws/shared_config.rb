@@ -177,7 +177,7 @@ module AwsAssumeRole::Vendored::Aws
         end
 
         def load_credentials_file
-            @parsed_credentials = IniParser.ini_parse(
+            @parsed_credentials = Aws::IniParser.ini_parse(
                 File.read(@credentials_path),
             )
         end
