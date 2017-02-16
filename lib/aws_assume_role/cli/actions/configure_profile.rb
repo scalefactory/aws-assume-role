@@ -16,6 +16,6 @@ class AwsAssumeRole::Cli::Actions::ConfigureProfile < AwsAssumeRole::Cli::Action
         new_hash[:aws_access_key_id] = prompt_for_option(:aws_access_key_id, "aws_access_key_id", ACCESS_KEY_VALIDATOR)
         new_hash[:aws_secret_access_key] = prompt_for_option(:aws_secret_access_key, "aws_secret_access_key", proc { filled? })
         AwsAssumeRole.shared_config.save_profile(profile, new_hash)
-        out format(t("commands.configure.saved"), config.profile, AwsAssumeRole.shared_config.config_path)
+        out format(t("commands.configure.saved"), profile, AwsAssumeRole.shared_config.config_path)
     end
 end
