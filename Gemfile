@@ -3,6 +3,10 @@ source "https://rubygems.org"
 
 gemspec
 
+group :test do
+    gem "rake"
+end
+
 group :development do
     gem "pry", "~> 0.10"
     gem "pry-byebug"
