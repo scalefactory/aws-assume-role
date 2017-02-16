@@ -21,7 +21,7 @@ For more information on role assumption, see the AWS documentation.
 
 Requirements
 ------------
-*   Ruby ≥ 2.1
+*   Ruby ≥ 2.2
 *   OS X KeyChain or GNOME Keyring
 
 Install
