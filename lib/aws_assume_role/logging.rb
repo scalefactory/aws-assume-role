@@ -6,6 +6,7 @@ module AwsAssumeRole::Logging
             @logger ||= begin
                 logger = Logger.new($stderr)
                 logger.level = AwsAssumeRole::Config.log_level
+                ENV["GLI_DEBUG"] = "true" if AwsAssumeRole::Config.log_level.zero?
                 logger
             end
         end
