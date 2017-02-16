@@ -1,5 +1,6 @@
 # coding: utf-8
-require_relative "lib/aws_assume_role/version"
+$LOAD_PATH << File.expand_path("../lib", __FILE__)
+require "aws_assume_role/version"
 Gem::Specification.new do |spec|
     spec.name          = "aws_assume_role"
     spec.version       = AwsAssumeRole::VERSION
