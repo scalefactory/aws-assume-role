@@ -10,30 +10,32 @@ require_relative "shared_keyring"
 require_relative "shared"
 require_relative "static"
 
-class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
-    extend Dry::Initializer::Mixin
+class AwsAssumeRole::Credentials::Factories::DefaultChainProvider < Dry::Struct
+    constructor_type :schema
     include AwsAssumeRole::Credentials::Factories
+    include AwsAssumeRole::Logging
 
-    option :access_key_id, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :credentials, default: proc { nil }
-    option :secret_access_key, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :session_token, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :duration_seconds, Dry::Types["coercible.int"].optional, default: proc { nil }
-    option :external_id, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :persist_session, Dry::Types["strict.bool"], default: proc { true }
-    option :profile, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :profile_name, Dry::Types["strict.string"].optional, default: proc { @profile }
-    option :region, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :role_arn, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :role_session_name, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :serial_number, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :use_mfa, default: proc { false }
-    option :no_profile, default: proc { false }
-    option :source_profile, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :instance_profile_credentials_retries, Dry::Types["strict.int"], default: proc { 0 }
-    option :instance_profile_credentials_timeout, Dry::Types["coercible.float"], default: proc { 1 }
+    attribute :access_key_id, Dry::Types["strict.string"].optional
+    attribute :credentials, Dry::Types["object"].optional
+    attribute :secret_access_key, Dry::Types["strict.string"].optional
+    attribute :session_token, Dry::Types["strict.string"].optional
+    attribute :duration_seconds, Dry::Types["coercible.int"].optional
+    attribute :external_id, Dry::Types["strict.string"].optional
+    attribute :persist_session, Dry::Types["strict.bool"].default(true)
+    attribute :profile, Dry::Types["strict.string"].optional
+    attribute :profile_name, Dry::Types["strict.string"].optional
+    attribute :region, Dry::Types["strict.string"].optional
+    attribute :role_arn, Dry::Types["strict.string"].optional
+    attribute :role_session_name, Dry::Types["strict.string"].optional
+    attribute :serial_number, Dry::Types["strict.string"].optional
+    attribute :use_mfa, Dry::Types["strict.bool"].default(false)
+    attribute :no_profile, Dry::Types["strict.bool"].default(false)
+    attribute :source_profile, Dry::Types["strict.string"].optional
+    attribute :instance_profile_credentials_retries, Dry::Types["strict.int"].default(0)
+    attribute :instance_profile_credentials_timeout, Dry::Types["coercible.float"].default(1.0)
 
     def initialize(*options)
+        logger.debug "DefaultChainProvider started"
         if options[0].is_a? Seahorse::Client::Configuration::DefaultResolver
             initialize_with_seahorse(options[0])
         else
@@ -73,10 +75,7 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
     end
 
     def to_h
-        instance_values.delete("__options__").symbolize_keys.merge(
-            instance_profile_credentials_retries: instance_profile_credentials_retries,
-            instance_profile_credentials_timeout: instance_profile_credentials_timeout,
-        )
+        to_hash
     end
 
     def resolve_credentials(type, break_if_successful = false, explicit_default_profile = false)

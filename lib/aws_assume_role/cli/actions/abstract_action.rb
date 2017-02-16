@@ -9,7 +9,9 @@ class AwsAssumeRole::Cli::Actions::AbstractAction
 
     def initialize(global_options, options, args)
         config = ProfileConfiguration.new_from_cli(global_options, options, args)
-        result = validate_options(config.to_h.deep_symbolize_keys)
+        logger.debug "Config initialized with #{config.to_hash}"
+        result = validate_options(config.to_hash)
+        logger.debug "Config validated as #{result.to_hash}"
         return act_on(config) if result.success?
         Ui.show_validation_errors result
     end
