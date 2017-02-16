@@ -1,4 +1,4 @@
-require "aws-sdk"
+require_relative "../../includes"
 
 module AwsAssumeRole
     module Vendored

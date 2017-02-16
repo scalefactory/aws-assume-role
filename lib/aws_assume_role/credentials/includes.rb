@@ -1,6 +1,4 @@
 require_relative "../includes"
-
 module AwsAssumeRole
-    module Store
-    end
+    module Credentials end
 end

@@ -4,7 +4,8 @@ require_relative "../../profile_configuration"
 class AwsAssumeRole::Cli::Actions::AbstractAction
     include AwsAssumeRole
     include AwsAssumeRole::Types
-    include Ui
+    include AwsAssumeRole::Ui
+    include AwsAssumeRole::Logging
     CommandSchema = proc { raise "CommandSchema Not implemented" }
 
     def initialize(global_options, options, args)
@@ -19,8 +20,9 @@ class AwsAssumeRole::Cli::Actions::AbstractAction
     private
 
     def try_for_credentials(config)
-        @provider ||= AwsAssumeRole::Credentials::Factories::DefaultChainProvider.new(config.to_h)
+        @provider ||= AwsAssumeRole::Credentials::Factories::DefaultChainProvider.new(config.to_hash)
         creds = @provider.resolve(nil_with_role_not_set: true)
+        logger.debug "Got credentials #{creds}"
         return creds unless creds.nil?
     rescue NoMethodError
         error "Cannot find any credentials"
