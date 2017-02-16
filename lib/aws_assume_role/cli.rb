@@ -1,11 +1,14 @@
 require_relative "includes"
 require_relative "ui"
+require_relative "logging"
 
 module AwsAssumeRole::Cli
-    include GLI::DSL
-    include GLI::App
     include AwsAssumeRole
     include AwsAssumeRole::Ui
+    include AwsAssumeRole::Logging
+    logger.debug "Bootstrapping"
+    include GLI::DSL
+    include GLI::App
     extend self # rubocop:disable Style/ModuleFunction
 
     commands_from File.join(File.realpath(__dir__), "cli", "commands")

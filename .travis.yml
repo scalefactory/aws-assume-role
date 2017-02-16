@@ -1,11 +1,11 @@
 language: ruby
 rvm:
-  - 2.2
+- 2.2
 deploy:
   provider: rubygems
   api_key:
-    secure: SKDiZG3npN7vGCXlJxyS6JTJO4+nfJOEfp4fOCAKSkxUmMUjmNpvkoJR0tmvqnD2VWm5linnDsENASoQgwt3dWhT6jpeTBDzKq6gj8+XTHguCe9enqvcxZZ3oKN4lUf94gdFZAIL3dg1HLwcRGPeMFf0DWCi0hNl1VIZHzjY+hg=
-  gem: aws_assume_role
+    secure: cETtcatMNmUl2X9NFWgRF2csX/hVmUE+0G3aSMxWhpwDbebd1hCsBPKySQjfeL4QHYidvg8jCr8XJ72ADMGY/uDKFzLo0iRMlf4d+je+VFnc5yhB5m6h0Eb2InO8FI2oHbXBklO1jxGvKIETv/03XjXBdR/M8H9+7QBDHG8f4MpMj6wtdfMWePAvmBi6vm4oFHAU+7NEInti/lYdplS8TsfiH3Fk6uzZ8SS1W15odd1fOcvlt9FfzV+YZYR7Na+AlSouFdZfnLHr0O3PBJdhBdCx8EBJ0h+HsZ3sDfY9EfJa2lV2167gyGJI0YfqQQHc/uEW+GyWJEJXNHCTuf/JUKfuDOXE6JC5qTmzwWPzrhHPyzLtrrNQIpPtuOCiEykUKN9qUaOHxGHVw2s1yg/dzOez9JePU77ZMXZjsrQi5auigFWJTD3N9/Q4nQrhjKhdD5VhRpYvHz0NUCBwKnwe7u8k6wuFxmGVAs0QfxfDWCdKoe4d0hRx4QAOYY68QYVisoROpcunOvslW9X1VreHU3LtzRdIqjh3UL0/EmY+s0Wu2e63x/TV6cYOmPUKZp0HI8LR3XIsTVX0tDKW/DolpUFwEbEf2c6o2tLqkdOzHkHXDeMcUxpAcqO/23bLffOp4aOsjI0MRID+cblZiZsFkprANDnE9sxy6znmfwKf344=
+  gem: aws-assume-role
   on:
     tags: true
     repo: scalefactory/aws-assume-role

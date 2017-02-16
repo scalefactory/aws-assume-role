@@ -43,7 +43,7 @@ module AwsAssumeRole::Ui
             end
             required(variable_name) { instance_eval(&block) }
         end
-        result = validator.call(variable_name => type[STDIN.gets.chomp])
+        result = validator.call(variable_name => type[(STDIN.gets || "").chomp])
         return result.to_h[variable_name] if result.success?
         show_validation_errors result
         ask_with_validation variable_name, question, &block
