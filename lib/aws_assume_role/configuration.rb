@@ -21,7 +21,7 @@ module AwsAssumeRole
                 ERROR: 3,
                 FATAL: 4,
                 UNKNOWN: 5,
-            }[value.to_sym] || 3
+            }[value.to_sym] || 2
         end
     end
     Config = Configuration.config
