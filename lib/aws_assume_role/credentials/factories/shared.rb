@@ -1,14 +1,16 @@
 require_relative "abstract_factory"
+require_relative "../providers/shared_keyring_credentials"
 
 class AwsAssumeRole::Credentials::Factories::Shared < AwsAssumeRole::Credentials::Factories::AbstractFactory
     type :credential_provider
-    priority 20
+    priority 30
 
     def initialize(options = {})
-        @profile = options[:profile] || "default"
-        @credentials = AwsAssumeRole::Vendored::Aws::SharedCredentials.new(profile_name: @profile)
-        @region = AwsAssumeRole.shared_config.profile_region(@profile)
-        @role_arn = AwsAssumeRole.shared_config.profile_role(@profile)
+        logger.debug "Shared Factory initiated with #{options}"
+        @profile = options[:profile]
+        @credentials = AwsAssumeRole::Credentials::Providers::SharedKeyringCredentials.new(options)
+        @region = @credentials.region
+        @role_arn = @credentials.role_arn
     rescue Aws::Errors::NoSuchProfileError
         nil
     end

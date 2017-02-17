@@ -1,5 +1,4 @@
 ---
-#require: rubocop-rspec
 AllCops:
     DisplayCopNames: true
     Exclude:
@@ -25,9 +24,6 @@ Metrics/PerceivedComplexity:
 
 Style/IndentationWidth:
     Width: 4
-
-RSpec/ExampleLength:
-    Enabled: false
 
 Style/TrailingCommaInArguments:
     EnforcedStyleForMultiline: comma

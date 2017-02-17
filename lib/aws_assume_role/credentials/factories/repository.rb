@@ -9,7 +9,7 @@ class AwsAssumeRole::Credentials::Factories::Repository
     FactoryRepositoryType = Types::Hash.schema(
         credential_provider: SubFactoryRepositoryType,
         second_factor_provider: SubFactoryRepositoryType,
-        role_assumption_provider: SubFactoryRepositoryType,
+        instance_role_provider: SubFactoryRepositoryType,
     )
 
     def self.factories
@@ -20,7 +20,7 @@ class AwsAssumeRole::Credentials::Factories::Repository
         @repository ||= FactoryRepositoryType[
             credential_provider: {},
             second_factor_provider: {},
-            role_assumption_provider: {},
+            instance_role_provider: {},
         ]
     end
 

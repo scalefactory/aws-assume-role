@@ -10,6 +10,7 @@ class AwsAssumeRole::ProfileConfiguration < Dry::Struct
     attribute :session_token, Dry::Types["strict.string"].optional
     attribute :duration_seconds, Dry::Types["coercible.int"].optional
     attribute :external_id, Dry::Types["strict.string"].optional
+    attribute :path, Dry::Types["strict.string"].optional
     attribute :persist_session, Dry::Types["strict.bool"].optional.default(true)
     attribute :profile, Dry::Types["strict.string"].optional
     attribute :region, Dry::Types["strict.string"].optional

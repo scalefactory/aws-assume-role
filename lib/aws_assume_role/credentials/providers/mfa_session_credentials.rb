@@ -64,14 +64,15 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
     end
 
     def credentials_from_keyring
-        @credentials_from_keyring ||= AwsAssumeRole::Store::Keyring.fetch @keyring_username
+        @credentials_from_keyring ||= AwsAssumeRole::Store::Keyring.fetch keyring_username
     rescue Aws::Errors::NoSuchProfileError
         logger.debug "Key not found"
         @credentials_from_keyring = nil
+        return nil
     end
 
     def persist_credentials
-        AwsAssumeRole::Store::Keyring.save_credentials @keyring_username, @credentials, expiration: @expiration
+        AwsAssumeRole::Store::Keyring.save_credentials keyring_username, @credentials, expiration: @expiration
     end
 
     def instance_credentials(credentials)
@@ -81,7 +82,7 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
     end
 
     def set_credentials_from_keyring
-        instance_credentials credentials_from_keyring
+        instance_credentials credentials_from_keyring if credentials_from_keyring
         initialized
         refresh_using_mfa unless @credentials && !near_expiration?
     end

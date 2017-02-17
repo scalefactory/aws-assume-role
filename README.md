@@ -21,7 +21,7 @@ For more information on role assumption, see the AWS documentation.
 
 Requirements
 ------------
-*   Ruby ≥ 2.2
+*   Ruby ≥ 2.1
 *   OS X KeyChain or GNOME Keyring
 
 Install
@@ -179,14 +179,14 @@ where options is a hash with the following symbol keys:
 `aws_assume_role` resolves credentials in almost the same way as the AWS SDK, i.e.:
 
 ```no-highlight
-static credentials ⟶ environment variables ⟶ configured profiles
+static credentials ⟶ environment variables ⟶ configured profiles role ⟶ assumption (look up source profile and check for 2FA)
 ```
 
 Any of the above may get chained to do MFA or role assumption, or both,
 in the following order:
 
 ```no-highlight
-second factor ⟶ role assumption (look up source profile and check for 2FA) ⟶ ecs/instance profile
+second factor ⟶  ecs/instance profile
 ```
 
 These are the same as the AWS SDK equivalents whereever possible. The command line help will give an explanation of the rest.

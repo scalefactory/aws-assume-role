@@ -15,7 +15,7 @@ class AwsAssumeRole::Credentials::Factories::AbstractFactory
     end
 
     def self.type(str)
-        @type = Types::Strict::Symbol.enum(:credential_provider, :second_factor_provider, :role_assumption_provider)[str]
+        @type = Types::Strict::Symbol.enum(:credential_provider, :second_factor_provider, :instance_role_provider)[str]
         register_if_complete
     end
 
