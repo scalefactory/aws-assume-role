@@ -1,5 +1,4 @@
 require_relative "includes"
-require "set"
 
 module AwsAssumeRole::Vendored::Aws
     # An auto-refreshing credential provider that works by assuming

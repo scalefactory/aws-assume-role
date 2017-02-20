@@ -38,8 +38,7 @@ module AwsAssumeRole::Store::Keyring
     def fetch(id, backend: nil)
         logger.debug "Fetching #{id} from keyring"
         fetched = keyring(backend).get_password(KEYRING_KEY, id)
-        return nil if fetched == "null" || fetched.nil?
-        raise Aws::Errors::NoSuchProfileError unless fetched
+        raise Aws::Errors::NoSuchProfileError if fetched == "null" || fetched.nil? || !fetched
         JSON.parse(fetched, symbolize_names: true)
     end
 

@@ -17,7 +17,9 @@ class AwsAssumeRole::Cli::Actions::Test < AwsAssumeRole::Cli::Actions::AbstractA
     end
 
     def act_on(config)
-        credentials = try_for_credentials config.to_h
+        logger.debug "Will try for credentials"
+        credentials = try_for_credentials config
+        logger.debug "Got credentials #{credentials}"
         client = Aws::STS::Client.new(credentials: credentials, region: resolved_region)
         identity = client.get_caller_identity
         out format(t("commands.test.output"), identity.account, identity.arn, identity.user_id)

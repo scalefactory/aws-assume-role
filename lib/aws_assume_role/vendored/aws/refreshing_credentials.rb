@@ -1,5 +1,3 @@
-require "thread"
-
 module AwsAssumeRole::Vendored::Aws
     # Base class used credential classes that can be refreshed. This
     # provides basic refresh logic in a thread-safe manor. Classes mixing in

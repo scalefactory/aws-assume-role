@@ -1,7 +1,7 @@
 require_relative "abstract_factory"
 
 class AwsAssumeRole::Credentials::Factories::InstanceProfile < AwsAssumeRole::Credentials::Factories::AbstractFactory
-    type :role_assumption_provider
+    type :instance_role_provider
     priority 40
 
     def initialize(options = {})

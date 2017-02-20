@@ -5,3 +5,5 @@ pkg/
 Gemfile.lock
 spec/reports/
 tags
+*.gem
+coverage

@@ -1,29 +1,30 @@
 require_relative "includes"
 require_relative "logging"
 
-class AwsAssumeRole::ProfileConfiguration
-    extend Dry::Initializer
+class AwsAssumeRole::ProfileConfiguration < Dry::Struct
+    constructor_type :schema
     include AwsAssumeRole::Logging
-    option :access_key_id, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :credentials, default: proc { nil }
-    option :secret_access_key, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :session_token, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :duration_seconds, Dry::Types["coercible.int"].optional, default: proc { nil }
-    option :external_id, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :persist_session, Dry::Types["strict.bool"], default: proc { true }
-    option :profile, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :region, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :role_arn, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :role_session_name, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :serial_number, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :mfa_serial, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :use_mfa, default: proc { false }
-    option :no_profile, default: proc { false }
-    option :shell_type, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :source_profile, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :args, default: proc { [] }
-    option :instance_profile_credentials_retries, Dry::Types["strict.int"], default: proc { 0 }
-    option :instance_profile_credentials_timeout, Dry::Types["coercible.float"], default: proc { 1 }
+    attribute :access_key_id, Dry::Types["strict.string"].optional
+    attribute :credentials, Dry::Types["object"].optional
+    attribute :secret_access_key, Dry::Types["strict.string"].optional
+    attribute :session_token, Dry::Types["strict.string"].optional
+    attribute :duration_seconds, Dry::Types["coercible.int"].optional
+    attribute :external_id, Dry::Types["strict.string"].optional
+    attribute :path, Dry::Types["strict.string"].optional
+    attribute :persist_session, Dry::Types["strict.bool"].optional.default(true)
+    attribute :profile, Dry::Types["strict.string"].optional
+    attribute :region, Dry::Types["strict.string"].optional
+    attribute :role_arn, Dry::Types["strict.string"].optional
+    attribute :role_session_name, Dry::Types["strict.string"].optional
+    attribute :serial_number, Dry::Types["strict.string"].optional
+    attribute :mfa_serial, Dry::Types["strict.string"].optional
+    attribute :use_mfa, Dry::Types["strict.bool"].optional.default(false)
+    attribute :no_profile, Dry::Types["strict.bool"].optional.default(false)
+    attribute :shell_type, Dry::Types["strict.string"].optional
+    attribute :source_profile, Dry::Types["strict.string"].optional
+    attribute :args, Dry::Types["strict.array"].optional.default([])
+    attribute :instance_profile_credentials_retries, Dry::Types["strict.int"].default(0)
+    attribute :instance_profile_credentials_timeout, Dry::Types["coercible.float"].default(1.0)
 
     attr_writer :credentials
 
@@ -64,8 +65,6 @@ class AwsAssumeRole::ProfileConfiguration
     end
 
     def to_h
-        instance_values.delete("__options__").symbolize_keys
+        to_hash
     end
-
-    Dry::Types.register_class(self)
 end

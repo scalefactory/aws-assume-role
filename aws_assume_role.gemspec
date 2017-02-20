@@ -22,10 +22,10 @@ Gem::Specification.new do |spec|
     spec.executables   = spec.files.grep(%r{^bin/aws}) { |f| File.basename(f) }
     spec.require_paths = ["lib"]
 
-    spec.add_runtime_dependency "activesupport", "~> 4.0"
+    spec.add_runtime_dependency "activesupport", "~> 4.2"
     spec.add_runtime_dependency "aws-sdk", "~> 2.7"
     spec.add_runtime_dependency "dry-configurable", "~> 0.5"
-    spec.add_runtime_dependency "dry-initializer", "~> 1.1"
+    spec.add_runtime_dependency "dry-struct", "~> 0.1"
     spec.add_runtime_dependency "dry-types", "~> 0.9"
     spec.add_runtime_dependency "dry-validation", "~> 0.10"
     spec.add_runtime_dependency "gli", "~> 2.15"
@@ -38,6 +38,8 @@ Gem::Specification.new do |spec|
     spec.add_development_dependency "rspec", "~> 3.5"
     spec.add_development_dependency "rubocop", "~> 0.46"
     spec.add_development_dependency "yard", "~> 0.9"
+    spec.add_development_dependency "simplecov", "~> 0.13"
+    spec.add_development_dependency "webmock", "~> 2.3"
 
     case Gem::Platform.local.os
     when "linux"

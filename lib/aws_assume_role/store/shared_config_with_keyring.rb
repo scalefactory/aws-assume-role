@@ -10,14 +10,51 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
 
     attr_reader :parsed_config
 
+    # @param [Hash] options
+    # @option options [String] :credentials_path Path to the shared credentials
+    #   file. Defaults to "#{Dir.home}/.aws/credentials".
+    # @option options [String] :config_path Path to the shared config file.
+    #   Defaults to "#{Dir.home}/.aws/config".
+    # @option options [String] :profile_name The credential/config profile name
+    #   to use. If not specified, will check `ENV['AWS_PROFILE']` before using
+    #   the fixed default value of 'default'.
+    # @option options [Boolean] :config_enabled If true, loads the shared config
+    #   file and enables new config values outside of the old shared credential
+    #   spec.
     def initialize(options = {})
-        super(options)
-        @config_enabled = true
-        @config_path = determine_config_path
-        load_config_file
+        @profile_name = determine_profile(options)
+        @config_enabled = options[:config_enabled]
+        @credentials_path = options[:credentials_path] ||
+                            determine_credentials_path
+        @parsed_credentials = {}
+        load_credentials_file if loadable?(@credentials_path)
+        return unless @config_enabled
+        @config_path = options[:config_path] || determine_config_path
+        load_config_file if loadable?(@config_path)
+    end
+
+    # @api private
+    def fresh(options = {})
+        @configuration = nil
+        @semaphore = nil
+        @assume_role_shared_config = nil
+        @profile_name = nil
+        @credentials_path = nil
+        @config_path = nil
+        @parsed_credentials = {}
+        @parsed_config = nil
+        @config_enabled = options[:config_enabled] ? true : false
+        @profile_name = determine_profile(options)
+        @credentials_path = options[:credentials_path] ||
+                            determine_credentials_path
+        load_credentials_file if loadable?(@credentials_path)
+        return unless @config_enabled
+        @config_path = options[:config_path] || determine_config_path
+        load_config_file if loadable?(@config_path)
     end
 
     def credentials(opts = {})
+        logger.debug "SharedConfigWithKeyring asked for credentials with opts #{opts}"
         p = opts[:profile] || @profile_name
         validate_profile_exists(p) if credentials_present?
         credentials_from_keyring(p, opts) || credentials_from_shared(p, opts) || credentials_from_config(p, opts)
@@ -59,20 +96,15 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
     end
 
     def profile_region(profile_name)
-        prof_cfg = @parsed_config[profile_key(profile_name)]
-        resolve_region(@parsed_config, prof_cfg)
+        resolve_profile_parameter(profile_name, "region")
     end
 
     def profile_role(profile_name)
-        prof_cfg = @parsed_config[profile_key(profile_name)]
-        resolve_arn(@parsed_config, prof_cfg)
+        resolve_profile_parameter(profile_name, "role_arn")
     end
 
-    def determine_profile(options)
-        ret = options[:profile_name]
-        ret ||= ENV["AWS_PROFILE"]
-        ret ||= "default"
-        ret
+    def profile_hash(profile_name)
+        {} || @parsed_config[profile_key(profile_name)]
     end
 
     private
@@ -86,21 +118,32 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
         end
     end
 
-    def resolve_region(cfg, prof_cfg)
+    def resolve_profile_parameter(profile_name, param)
+        return unless @parsed_config
+        prof_cfg = @parsed_config[profile_key(profile_name)]
+        resolve_parameter(param, @parsed_config, prof_cfg)
+    end
+
+    def resolve_parameter(param, cfg, prof_cfg)
         return unless prof_cfg && cfg
-        return prof_cfg["region"] if prof_cfg.key? "region"
-        source_cfg = cfg[prof_cfg["source_profile"]]
-        cfg[prof_cfg["source_profile"]]["region"] if source_cfg && source_cfg.key?("region")
+        return prof_cfg[param] if prof_cfg.key? param
+        source_profile = prof_cfg["source_profile"]
+        return unless source_profile
+        source_cfg = cfg[source_profile]
+        return unless source_cfg
+        cfg[prof_cfg["source_profile"]][param] if source_cfg.key?(param)
+    end
+
+    def resolve_region(cfg, prof_cfg)
+        resolve_parameter("region", cfg, prof_cfg)
     end
 
     def resolve_arn(cfg, prof_cfg)
-        return unless prof_cfg && cfg
-        return prof_cfg["role_arn"] if prof_cfg.key? "role_arn"
-        source_cfg = cfg[prof_cfg["source_profile"]]
-        cfg[prof_cfg["source_profile"]]["role_arn"] if source_cfg && source_cfg.key?("role_arn")
+        resolve_parameter("role_arn", cfg, prof_cfg)
     end
 
     def assume_role_from_profile(cfg, profile, opts)
+        logger.debug "Entering assume_role_from_profile with #{cfg}, #{profile}, #{opts}"
         prof_cfg = cfg[profile]
         return unless cfg && prof_cfg
         opts[:source_profile] ||= prof_cfg["source_profile"]
@@ -133,7 +176,7 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
     def mfa_session(cfg, profile, opts)
         prof_cfg = cfg[profile]
         return unless cfg && prof_cfg
-        opts[:serial_number] ||= prof_cfg["mfa_serial"]
+        opts[:serial_number] ||= opts[:mfa_serial] || prof_cfg["mfa_serial"]
         opts[:source_profile] ||= prof_cfg["source_profile"]
         opts[:region] ||= profile_region(profile)
         return unless opts[:serial_number]
@@ -141,11 +184,26 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
         AwsAssumeRole::Credentials::Providers::MfaSessionCredentials.new(opts)
     end
 
-    def credentials_from_keyring(profile, _options)
-        return unless @parsed_config && @parsed_config[profile_key(profile)]
-        logger.debug "Attempt to fetch #{profile} from keyring"
-        creds = Serialization.credentials_from_hash Keyring.fetch(profile)
-        creds if credentials_complete(creds)
+    def credentials_from_keyring(profile, opts)
+        logger.debug "Entering credentials_from_keyring"
+        return unless @parsed_config
+        logger.debug "credentials_from_keyring: @parsed_config found"
+        prof_cfg = @parsed_config[profile]
+        return unless prof_cfg
+        logger.debug "credentials_from_keyring: prof_cfg found"
+        opts[:serial_number] ||= opts[:mfa_serial] || prof_cfg[:mfa_serial] || prof_cfg[:serial_number]
+        if opts[:serial_number]
+            logger.debug "credentials_from_keyring detected mfa requirement"
+            mfa_session(@parsed_config, profile, opts)
+        else
+            logger.debug "Attempt to fetch #{profile} from keyring"
+            keyring_creds = Keyring.fetch(profile)
+            return unless keyring_creds
+            creds = Serialization.credentials_from_hash Keyring.fetch(profile)
+            creds if credentials_complete(creds)
+        end
+    rescue Aws::Errors::NoSourceProfileError, Aws::Errors::NoSuchProfileError
+        nil
     end
 
     def semaphore
@@ -170,6 +228,6 @@ module AwsAssumeRole
 
     def shared_config
         enabled = ENV["AWS_SDK_CONFIG_OPT_OUT"] ? false : true
-        @assuome_role_shared_config ||= ::AwsAssumeRole::Store::SharedConfigWithKeyring.new(config_enabled: enabled)
+        @assume_role_shared_config ||= ::AwsAssumeRole::Store::SharedConfigWithKeyring.new(config_enabled: enabled)
     end
 end

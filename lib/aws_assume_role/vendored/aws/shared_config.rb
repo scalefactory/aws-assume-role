@@ -2,6 +2,7 @@ require_relative "includes"
 module AwsAssumeRole::Vendored::Aws
     # @api private
     class SharedConfig
+        include AwsAssumeRole::Logging
         # @return [String]
         attr_reader :credentials_path
 
@@ -102,9 +103,11 @@ module AwsAssumeRole::Vendored::Aws
         # Will always attempt first to assume a role from the shared credentials
         # file, if present.
         def assume_role_credentials_from_config(opts = {})
+            logger.debug "Entered assume_role_credentials_from_config with #{opts}"
             p = opts.delete(:profile) || @profile_name
             credentials = assume_role_from_profile(@parsed_credentials, p, opts)
             if @parsed_config
+                logger.debug "Parsed config loaded, testing"
                 credentials ||= assume_role_from_profile(@parsed_config, p, opts)
             end
             credentials
@@ -140,7 +143,7 @@ module AwsAssumeRole::Vendored::Aws
                         opts[:external_id] ||= prof_cfg["external_id"]
                         opts[:serial_number] ||= prof_cfg["mfa_serial"]
                         opts[:profile] = opts.delete(:source_profile)
-                        AwsAssumeRole::Vendored::Aws::AssumeRoleCredentials.new(opts)
+                        AssumeRoleCredentials.new(opts)
                     else
                         raise ::Aws::Errors::NoSourceProfileError, "Profile #{profile} has a role_arn, and source_profile, but the"\
                               " source_profile does not have credentials."

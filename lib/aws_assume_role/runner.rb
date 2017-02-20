@@ -1,18 +1,17 @@
 require_relative "includes"
 require_relative "logging"
 
-class AwsAssumeRole::Runner
+class AwsAssumeRole::Runner < Dry::Struct
     include AwsAssumeRole::Logging
-    extend Dry::Initializer
+    constructor_type :schema
+    attribute :command, Dry::Types["coercible.array"].member(Dry::Types["strict.string"]).default([])
+    attribute :exit_on_error, Dry::Types["strict.bool"].default(true)
+    attribute :expected_exit_code, Dry::Types["strict.int"].default(0)
+    attribute :environment, Dry::Types["strict.hash"].default({})
+    attribute :credentials, Dry::Types["object"].optional
 
-    param :command, Dry::Types["coercible.array"].member(Dry::Types["strict.string"])
-    option :exit_on_error, Dry::Types["strict.bool"], default: proc { true }
-    option :expected_exit_code, Dry::Types["strict.int"], default: proc { 0 }
-    option :environment, Dry::Types["strict.hash"], default: proc { {} }
-    option :credentials, optional: true
-
-    def initialize(params, options = {})
-        super(params, options)
+    def initialize(options)
+        super(options)
         command_to_exec = command.join(" ")
         process_credentials unless credentials.blank?
         system environment, command_to_exec

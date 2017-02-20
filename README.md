@@ -1,5 +1,10 @@
 aws-assume-role
 ---------------
+[![Build Status](https://travis-ci.org/scalefactory/aws-assume-role.svg?branch=master)](https://travis-ci.org/scalefactory/aws-assume-role)
+[![Coverage Status](https://coveralls.io/repos/github/scalefactory/aws-assume-role/badge.svg?branch=master)](https://coveralls.io/github/scalefactory/aws-assume-role?branch=master)
+[![Code Climate](https://codeclimate.com/github/scalefactory/aws-assume-role/badges/gpa.svg)](https://codeclimate.com/github/scalefactory/aws-assume-role)
+[![Dependencies](https://img.shields.io/librariesio/github/scalefactory/aws-assume-role.svg)](https://libraries.io/rubygems/aws_assume_role)
+[![Gem Version](https://badge.fury.io/rb/aws_assume_role.svg)](https://badge.fury.io/rb/aws_assume_role)
 
 aws-assume-role is a utility intended for developer and operator environments
 who need to use 2FA and role assumption to access AWS services.
@@ -17,11 +22,11 @@ disk as unencrypted files.
 
 It allows easy credential management and role assumption with a 2FA/MFA device.
 
-For more information on role assumption, see the AWS documentation.
+For more information on role assumption, see the [AWS documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html).
 
 Requirements
 ------------
-*   Ruby ≥ 2.2
+*   Ruby ≥ 2.1
 *   OS X KeyChain or GNOME Keyring
 
 Install
@@ -179,14 +184,14 @@ where options is a hash with the following symbol keys:
 `aws_assume_role` resolves credentials in almost the same way as the AWS SDK, i.e.:
 
 ```no-highlight
-static credentials ⟶ environment variables ⟶ configured profiles
+static credentials ⟶ environment variables ⟶ configured profiles role ⟶ assumption (look up source profile and check for 2FA)
 ```
 
 Any of the above may get chained to do MFA or role assumption, or both,
 in the following order:
 
 ```no-highlight
-second factor ⟶ role assumption (look up source profile and check for 2FA) ⟶ ecs/instance profile
+second factor ⟶  ecs/instance profile
 ```
 
 These are the same as the AWS SDK equivalents whereever possible. The command line help will give an explanation of the rest.

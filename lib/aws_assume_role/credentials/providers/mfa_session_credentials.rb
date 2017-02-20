@@ -1,32 +1,29 @@
 require_relative "includes"
 require_relative "../../types"
+require_relative "../../configuration"
 
-class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials
+class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
+    constructor_type :schema
     include AwsAssumeRole::Vendored::Aws::CredentialProvider
     include AwsAssumeRole::Vendored::Aws::RefreshingCredentials
     include AwsAssumeRole::Ui
     include AwsAssumeRole::Logging
-    include AwsAssumeRole
-    Types = Dry::Types.module
-    extend Dry::Initializer::Mixin
 
-    attr_reader :permanent_credentials
+    attribute :permanent_credentials, Dry::Types["object"].optional
+    attribute :credentials, Dry::Types["object"].optional
+    attribute :expiration, Dry::Types["strict.time"].default(Time.now)
+    attribute :first_time, Dry::Types["strict.bool"].default(true)
+    attribute :persist_session, Dry::Types["strict.bool"].default(true)
+    attribute :duration_seconds, Dry::Types["coercible.int"].default(3600)
+    attribute :region, AwsAssumeRole::Types::Region.optional
+    attribute :serial_number, AwsAssumeRole::Types::MfaSerial.optional.default("automatic")
 
-    option :permanent_credentials, default: proc { credentials }
-    option :credentials
-    option :expiration, type: Types::Strict::Time, default: proc { Time.now }
-    option :first_time, type: Types::Strict::Bool, default: proc { true }
-    option :persist_session, type: Types::Strict::Bool, default: proc { true }
-    option :duration_seconds, type: Types::Coercible::Int, default: proc { 3600 }
-    option :region, type: AwsAssumeRole::Types::Region.optional, default: proc { AwsAssumeRole.Config.region }
-    option :serial_number, type: AwsAssumeRole::Types::MfaSerial.optional, default: proc { "automatic" }
-
-    def initialize(*options)
-        super(*options)
+    def initialize(options)
+        options.each { |key, value| instance_variable_set("@#{key}", value) }
         @permanent_credentials ||= credentials
         @credentials = nil
         @serial_number = resolve_serial_number(serial_number)
-        AwsAssumeRole::Vendored::Aws::RefreshingCredentials.instance_method(:initialize).bind(self).call(*options)
+        AwsAssumeRole::Vendored::Aws::RefreshingCredentials.instance_method(:initialize).bind(self).call(options)
     end
 
     private
@@ -67,14 +64,15 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials
     end
 
     def credentials_from_keyring
-        @credentials_from_keyring ||= AwsAssumeRole::Store::Keyring.fetch @keyring_username
+        @credentials_from_keyring ||= AwsAssumeRole::Store::Keyring.fetch keyring_username
     rescue Aws::Errors::NoSuchProfileError
         logger.debug "Key not found"
         @credentials_from_keyring = nil
+        return nil
     end
 
     def persist_credentials
-        AwsAssumeRole::Store::Keyring.save_credentials @keyring_username, @credentials, expiration: @expiration
+        AwsAssumeRole::Store::Keyring.save_credentials keyring_username, @credentials, expiration: @expiration
     end
 
     def instance_credentials(credentials)
@@ -84,7 +82,7 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials
     end
 
     def set_credentials_from_keyring
-        instance_credentials credentials_from_keyring
+        instance_credentials credentials_from_keyring if credentials_from_keyring
         initialized
         refresh_using_mfa unless @credentials && !near_expiration?
     end
@@ -98,5 +96,4 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials
         user_name = identity.arn.split("/")[1]
         "arn:aws:iam::#{identity.account}:mfa/#{user_name}"
     end
-    Dry::Types.register_class(self)
 end

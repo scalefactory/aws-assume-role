@@ -6,50 +6,71 @@ require_relative "environment"
 require_relative "repository"
 require_relative "instance_profile"
 require_relative "assume_role"
-require_relative "shared_keyring"
 require_relative "shared"
 require_relative "static"
 
-class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
-    extend Dry::Initializer::Mixin
+class AwsAssumeRole::Credentials::Factories::DefaultChainProvider < Dry::Struct
+    constructor_type :schema
     include AwsAssumeRole::Credentials::Factories
+    include AwsAssumeRole::Logging
 
-    option :access_key_id, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :credentials, default: proc { nil }
-    option :secret_access_key, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :session_token, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :duration_seconds, Dry::Types["coercible.int"].optional, default: proc { nil }
-    option :external_id, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :persist_session, Dry::Types["strict.bool"], default: proc { true }
-    option :profile, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :profile_name, Dry::Types["strict.string"].optional, default: proc { @profile }
-    option :region, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :role_arn, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :role_session_name, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :serial_number, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :use_mfa, default: proc { false }
-    option :no_profile, default: proc { false }
-    option :source_profile, Dry::Types["strict.string"].optional, default: proc { nil }
-    option :instance_profile_credentials_retries, Dry::Types["strict.int"], default: proc { 0 }
-    option :instance_profile_credentials_timeout, Dry::Types["coercible.float"], default: proc { 1 }
+    attribute :access_key_id, Dry::Types["strict.string"].optional
+    attribute :credentials, Dry::Types["object"].optional
+    attribute :secret_access_key, Dry::Types["strict.string"].optional
+    attribute :session_token, Dry::Types["strict.string"].optional
+    attribute :duration_seconds, Dry::Types["coercible.int"].optional
+    attribute :external_id, Dry::Types["strict.string"].optional
+    attribute :persist_session, Dry::Types["strict.bool"].default(true)
+    attribute :path, Dry::Types["strict.string"].optional
+    attribute :profile, Dry::Types["strict.string"].optional
+    attribute :profile_name, Dry::Types["strict.string"].optional
+    attribute :region, Dry::Types["strict.string"].optional
+    attribute :role_arn, Dry::Types["strict.string"].optional
+    attribute :role_session_name, Dry::Types["strict.string"].optional
+    attribute :serial_number, Dry::Types["strict.string"].optional
+    attribute :mfa_serial, Dry::Types["strict.string"].optional
+    attribute :use_mfa, Dry::Types["strict.bool"].default(false)
+    attribute :no_profile, Dry::Types["strict.bool"].default(false)
+    attribute :source_profile, Dry::Types["strict.string"].optional
+    attribute :instance_profile_credentials_retries, Dry::Types["strict.int"].default(0)
+    attribute :instance_profile_credentials_timeout, Dry::Types["coercible.float"].default(1.0)
 
-    def initialize(*options)
-        if options[0].is_a? Seahorse::Client::Configuration::DefaultResolver
-            initialize_with_seahorse(options[0])
+    def self.new(options)
+        if options.respond_to? :resolve
+            finalize_instance new_with_seahorse(options)
         else
-            super(*options)
+            finalize_instance(options)
         end
-        @profile_name ||= @profile
-        @original_profile = @profile
+    end
+
+    def self.finalize_instance(options)
+        new_opts = options.to_h
+        new_opts[:profile_name] ||= new_opts[:profile]
+        new_opts[:original_profile] = new_opts[:profile_name]
+        instance = allocate
+        instance.send(:initialize, new_opts)
+        instance
+    end
+
+    def self.new_with_seahorse(resolver)
+        keys = resolver.resolve
+        options = keys.map do |k|
+            [k, resolver.send(k)]
+        end
+        finalize_instance(options.to_h)
     end
 
     def resolve(nil_with_role_not_set: false, explicit_default_profile: false)
         resolve_final_credentials(explicit_default_profile)
-        nil_creds = Aws::Credentials.new(nil, nil, nil)
-        return nil_creds if (nil_with_role_not_set &&
+        # nil_creds = Aws::Credentials.new(nil, nil, nil)
+        return nil if (nil_with_role_not_set &&
                              @role_arn &&
                              @credentials.credentials.session_token.nil?) || @credentials.nil?
         @credentials
+    end
+
+    def to_h
+        to_hash
     end
 
     private
@@ -58,25 +79,10 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
         resolve_credentials(:credential_provider, true, explicit_default_profile)
         return @credentials if @credentials && @credentials.set? && !use_mfa && !role_arn
         resolve_credentials(:second_factor_provider, true, explicit_default_profile)
-        return @credentials if @credentials && @credentials.set? && !role_arn
-        resolve_credentials(:role_assumption_provider, true, explicit_default_profile)
         return @credentials if @credentials && @credentials.set?
-        Aws::Credentials.new(nil, nil, nil)
-    end
-
-    def initialize_with_seahorse(resolver)
-        keys = resolver.resolve
-        options = keys.map do |k|
-            [k, resolver.send(k)]
-        end
-        __initialize__(options.to_h)
-    end
-
-    def to_h
-        instance_values.delete("__options__").symbolize_keys.merge(
-            instance_profile_credentials_retries: instance_profile_credentials_retries,
-            instance_profile_credentials_timeout: instance_profile_credentials_timeout,
-        )
+        resolve_credentials(:instance_role_provider, true, explicit_default_profile)
+        return @credentials if @credentials && @credentials.set?
+        nil
     end
 
     def resolve_credentials(type, break_if_successful = false, explicit_default_profile = false)
@@ -84,13 +90,16 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider
         factories_to_try.each do |x|
             options = to_h
             options[:credentials] = credentials if credentials && credentials.set?
+            logger.debug "About to try credential lookup with #{x}"
             factory = x.new(options)
             @region ||= factory.region
             @profile ||= factory.profile
             @role_arn ||= factory.role_arn
             next unless factory.credentials && factory.credentials.set?
+            logger.debug "Profile currently #{@profile}"
             next if explicit_default_profile && (@profile == "default") && (@profile != @original_profile)
             @credentials ||= factory.credentials
+            logger.debug "Got #{@credentials}"
             break if break_if_successful
         end
     end

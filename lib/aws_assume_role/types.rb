@@ -1,5 +1,4 @@
-require "dry-types"
-
+require_relative "includes"
 module AwsAssumeRole
     module Types
         Dry = Dry::Types.module
