@@ -10,6 +10,7 @@ class AwsAssumeRole::Cli::Actions::ConfigureRoleAssumption < AwsAssumeRole::Cli:
         required(:role_arn) { filled? & format?(ROLE_REGEX) }
         required(:external_id).filled?
         required(:duration_seconds).filled?
+        optional(:yubikey_oath_name)
     end
 
     def act_on(config)

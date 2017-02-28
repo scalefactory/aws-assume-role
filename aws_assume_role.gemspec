@@ -35,6 +35,8 @@ Gem::Specification.new do |spec|
     spec.add_runtime_dependency "launchy", "~> 2.4"
     spec.add_runtime_dependency "keyring", "~> 0.4", ">= 0.4.1"
     spec.add_runtime_dependency "pastel", "~> 0.7"
+    spec.add_runtime_dependency "smartcard", "~> 0.5.6"
+    spec.add_runtime_dependency "yubioath", "~> 1.2", ">= 1.2.1"
     spec.add_development_dependency "rspec", "~> 3.5"
     spec.add_development_dependency "rubocop", "~> 0.46"
     spec.add_development_dependency "yard", "~> 0.9"

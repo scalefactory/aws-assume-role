@@ -86,6 +86,7 @@ en:
         duration_seconds: Default session length
         shell_type: What type of shell to use.
         name_to_delete: Please type the name of the profile, i.e. %s , to continue deletion.
+        yubikey_oath_name: Identifier of the OATH / TOTP secret stored on the yubikey.
     program_description: "A tool for AWS credential management"
     errors:
         NoSuchProfileError: Profile %s not found in shared configuration.

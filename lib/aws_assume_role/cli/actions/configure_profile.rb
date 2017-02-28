@@ -7,6 +7,7 @@ class AwsAssumeRole::Cli::Actions::ConfigureProfile < AwsAssumeRole::Cli::Action
         optional(:region) { filled? > format?(REGION_REGEX) }
         optional(:mfa_serial)
         optional(:profile_name)
+        optional(:yubikey_oath_name)
     end
 
     def act_on(config)

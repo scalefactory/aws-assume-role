@@ -1,6 +1,8 @@
 require_relative "includes"
 require_relative "../../types"
 require_relative "../../configuration"
+require "smartcard"
+require "yubioath"
 
 class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
     constructor_type :schema
@@ -17,6 +19,7 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
     attribute :duration_seconds, Dry::Types["coercible.int"].default(3600)
     attribute :region, AwsAssumeRole::Types::Region.optional
     attribute :serial_number, AwsAssumeRole::Types::MfaSerial.optional.default("automatic")
+    attribute :yubikey_oath_name, Dry::Types["strict.string"].optional
 
     def initialize(options)
         options.each { |key, value| instance_variable_set("@#{key}", value) }
@@ -51,8 +54,17 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
         broadcast(:mfa_completed)
     end
 
+    def retrieve_yubikey_token
+        context = Smartcard::PCSC::Context.new
+        raise "Yubikey not found" unless context.readers.length == 1
+        reader_name = context.readers.first
+        card = Smartcard::PCSC::Card.new(context, reader_name, :shared)
+        codes = YubiOATH.new(card).calculate_all(timestamp: Time.now)
+        codes.fetch(BinData::String.new(@yubikey_oath_name))
+    end
+
     def refresh_using_mfa
-        token_code = prompt_for_token(@first_time)
+        token_code = @yubikey_oath_name ? retrieve_yubikey_token : prompt_for_token
         token = sts_client.get_session_token(
             duration_seconds: @duration_seconds,
             serial_number: @serial_number,
