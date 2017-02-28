@@ -52,6 +52,7 @@ module AwsAssumeRole::Store::Keyring
         credentials_to_persist = Serialization.credentials_to_hash(credentials)
         credentials_to_persist[:expiration] = expiration if expiration
         semaphore.synchronize do
+            keyring(backend).delete_password(KEYRING_KEY, id)
             keyring(backend).set_password(KEYRING_KEY, id, credentials_to_persist.to_json)
         end
     end
