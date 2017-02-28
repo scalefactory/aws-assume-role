@@ -77,6 +77,7 @@ en:
         mfa_token:
             first_time: "Please provide an MFA token"
             other_times: "Credentials have expired, please provide another MFA"
+            smartcard_not_supported: "Smartcard drivers not installed, see https://github.com/scalefactory/aws-assume-role/blob/master/README.md for details" 
         default_role: "A default role to assume (leave blank to not use)"
         external_id: String provided by the external account holder to uniquely identify you.
         source_profile: Which profile to use to assume this role.

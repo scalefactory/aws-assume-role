@@ -1,8 +1,13 @@
 require_relative "includes"
 require_relative "../../types"
 require_relative "../../configuration"
-require "smartcard"
-require "yubioath"
+begin
+    require "smartcard"
+    require "yubioath"
+    SMARTCARD_SUPPORT = true
+rescue LoadError
+    SMARTCARD_SUPPORT = false
+end
 
 class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
     constructor_type :schema
@@ -55,6 +60,7 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
     end
 
     def retrieve_yubikey_token
+        raise t("options.mfa_token.smartcard_not_supported") unless SMARTCARD_SUPPORT
         context = Smartcard::PCSC::Context.new
         raise "Yubikey not found" unless context.readers.length == 1
         reader_name = context.readers.first

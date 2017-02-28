@@ -99,6 +99,12 @@ token without prompting for user input. To use this specify
 --mfa-serial automatic --yubikey-oath-name "Amazon Web Services:myuser@company-sso"
 ```
 
+_Yubikey Support_: `aws-assume-role` uses the [smartcard gem](https://rubygems.org/gems/smartcard)
+to connect to the Yubikey, this itself depends upon some C libraries being installed. They provide
+[platform specific instructions](https://github.com/costan/smartcard/blob/master/BUILD#L19)
+for installing these libraries PC/SC.
+
+
 Running applications
 --------------------
 
