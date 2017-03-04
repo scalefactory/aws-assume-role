@@ -91,6 +91,7 @@ en:
     program_description: "A tool for AWS credential management"
     errors:
         NoSuchProfileError: Profile %s not found in shared configuration.
+        SmartcardException:  No YubiKey found!
         MissingCredentialsError: No credentials found!
         rules:
             profile:
