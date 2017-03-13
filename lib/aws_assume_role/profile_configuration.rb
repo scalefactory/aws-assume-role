@@ -18,6 +18,7 @@ class AwsAssumeRole::ProfileConfiguration < Dry::Struct
     attribute :role_session_name, Dry::Types["strict.string"].optional
     attribute :serial_number, Dry::Types["strict.string"].optional
     attribute :mfa_serial, Dry::Types["strict.string"].optional
+    attribute :yubikey_oath_name, Dry::Types["strict.string"].optional
     attribute :use_mfa, Dry::Types["strict.bool"].optional.default(false)
     attribute :no_profile, Dry::Types["strict.bool"].optional.default(false)
     attribute :shell_type, Dry::Types["strict.string"].optional

@@ -69,7 +69,8 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
         semaphore.synchronize do
             Keyring.save_credentials profile_name, credentials if credentials.set?
             merged_config = merged_config.slice :region, :role_arn, :mfa_serial, :source_profile,
-                                                :role_session_name, :external_id, :duration_seconds
+                                                :role_session_name, :external_id, :duration_seconds,
+                                                :yubikey_oath_name
             configuration.delete_section ckey
             configuration[ckey] = merged_config.compact
             save_configuration
@@ -155,9 +156,15 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
                 opts[:role_arn] ||= prof_cfg["role_arn"]
                 opts[:external_id] ||= prof_cfg["external_id"]
                 opts[:serial_number] ||= prof_cfg["mfa_serial"]
+                opts[:yubikey_oath_name] ||= prof_cfg["yubikey_oath_name"]
                 opts[:region] ||= profile_region(profile)
                 if opts[:serial_number]
-                    mfa_opts = { credentials: opts[:credentials], region: opts[:region], serial_number: opts[:serial_number] }
+                    mfa_opts = {
+                        credentials: opts[:credentials],
+                        region: opts[:region],
+                        serial_number: opts[:serial_number],
+                        yubikey_oath_name: opts[:yubikey_oath_name],
+                    }
                     mfa_creds = mfa_session(cfg, opts[:source_profile], mfa_opts)
                     opts.delete :serial_number
                 end

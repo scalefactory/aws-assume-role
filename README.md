@@ -82,6 +82,29 @@ set up a role that you will assume in every day use:
 More options are available in the application help.
 Use `> aws-assume-role --help ` for help at any time.
 
+Using MFA TOTP with a Yubikey
+-----------------------------
+
+[Yubikeys support TOTP](https://developers.yubico.com/OATH/) this offers some
+benefits over using a phone. One benefit is the TOTP token can be retrieved by
+an API call rather than a user reading the token from the device.
+
+This allows developers to call AWS through aws-assume-role, providing an MFA
+token without prompting for user input. To use this specify
+`--yubikey-oath-name` when calling configure role.
+
+``` sh
+> aws-assume-role configure role -p company-dev --source-profile company-sso  \
+--role-arn=arn:aws:iam::000000000001:role/ViewEC2 --role-session-name=growthsmith \
+--mfa-serial automatic --yubikey-oath-name "Amazon Web Services:myuser@company-sso"
+```
+
+_Yubikey Support_: `aws-assume-role` uses the [smartcard gem](https://rubygems.org/gems/smartcard)
+to connect to the Yubikey, this itself depends upon some C libraries being installed. They provide
+[platform specific instructions](https://github.com/costan/smartcard/blob/master/BUILD#L19)
+for installing these libraries PC/SC.
+
+
 Running applications
 --------------------
 

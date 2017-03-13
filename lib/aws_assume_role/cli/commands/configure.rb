@@ -20,6 +20,7 @@ module AwsAssumeRole::Cli
             r.flag ["region"], desc: t("options.region")
             r.flag ["external-id"], desc: t("options.external_id")
             r.flag ["duration-seconds"], desc: t("options.duration_seconds"), default_value: 3600
+            r.flag ["yubikey-oath-name"], desc: t("options.yubikey_oath_name")
 
             r.action do |global_options, options, args|
                 AwsAssumeRole::Cli::Actions::ConfigureRoleAssumption.new(global_options, options, args)

@@ -77,6 +77,7 @@ en:
         mfa_token:
             first_time: "Please provide an MFA token"
             other_times: "Credentials have expired, please provide another MFA"
+            smartcard_not_supported: "Smartcard drivers not installed, see https://github.com/scalefactory/aws-assume-role/blob/master/README.md for details" 
         default_role: "A default role to assume (leave blank to not use)"
         external_id: String provided by the external account holder to uniquely identify you.
         source_profile: Which profile to use to assume this role.
@@ -86,9 +87,11 @@ en:
         duration_seconds: Default session length
         shell_type: What type of shell to use.
         name_to_delete: Please type the name of the profile, i.e. %s , to continue deletion.
+        yubikey_oath_name: Identifier of the OATH / TOTP secret stored on the yubikey.
     program_description: "A tool for AWS credential management"
     errors:
         NoSuchProfileError: Profile %s not found in shared configuration.
+        SmartcardException:  No YubiKey found!
         MissingCredentialsError: No credentials found!
         rules:
             profile:
