@@ -1,7 +1,7 @@
 ## 0.2.0
 
 * Add support for Yubikey as a source for MFA (@davbo)
-* Remove expired crednetials before writing new STS credentials (@davbo)
+* Remove expired credentials before writing new STS credentials (@davbo)
 
 ## 0.1.2
 
