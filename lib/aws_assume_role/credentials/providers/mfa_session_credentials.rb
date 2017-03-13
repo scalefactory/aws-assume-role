@@ -44,8 +44,8 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
         @sts_client ||= Aws::STS::Client.new(region: @region, credentials: @permanent_credentials)
     end
 
-    def prompt_for_token(first_time)
-        text = first_time ? t("options.mfa_token.first_time") : t("options.mfa_token.other_times")
+    def prompt_for_token
+        text = @first_time ? t("options.mfa_token.first_time") : t("options.mfa_token.other_times")
         Ui.input.ask text
     end
 

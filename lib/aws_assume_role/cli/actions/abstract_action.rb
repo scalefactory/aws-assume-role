@@ -24,8 +24,11 @@ class AwsAssumeRole::Cli::Actions::AbstractAction
         creds = @provider.resolve(nil_with_role_not_set: true)
         logger.debug "Got credentials #{creds}"
         return creds unless creds.nil?
+    rescue Smartcard::PCSC::Exception
+        error t("errors.SmartcardException")
+        exit 403
     rescue NoMethodError
-        error "Cannot find any credentials"
+        error t("errors.MissingCredentialsError")
         exit 404
     end
 
