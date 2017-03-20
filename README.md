@@ -27,7 +27,10 @@ For more information on role assumption, see the [AWS documentation](https://doc
 Requirements
 ------------
 *   Ruby ≥ 2.1
-*   OS X KeyChain or GNOME Keyring
+*   macOS Keychain / GNOME Keyring
+*   At least one account with Amazon Web Services
+*   An IAM role configured in the target account
+*   An IAM user with rights to assume that role
 
 Install
 -------
@@ -53,6 +56,11 @@ yum install gobject-introspection-devel
 ```
 Setup
 -----
+
+You should already have an IAM user that you can log in to via AWS' console.
+If you do not already have an AWS access key and matching secret key for your
+own IAM user, use the AWS console to create that credential pair.
+
 aws-assume-role works best if you also store permanent credentials in your keystore:
 
 ``` sh
