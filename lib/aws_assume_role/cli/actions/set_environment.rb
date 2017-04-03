@@ -30,7 +30,7 @@ class AwsAssumeRole::Cli::Actions::SetEnvironment < AwsAssumeRole::Cli::Actions:
         required(:role_arn).maybe { filled? > format?(ROLE_REGEX) }
         required(:role_session_name).maybe { filled? > format?(ROLE_SESSION_NAME_REGEX) }
         required(:duration_seconds).maybe
-        rule(role_specification: [:profile, :role_arn, :role_session_name, :duration_seconds]) do |p, r, s, d|
+        rule(role_specification: %i(profile role_arn role_session_name duration_seconds)) do |p, r, s, d|
             (p.filled? | p.empty? & r.filled?) & (r.filled? > s.filled? & d.filled?)
         end
     end

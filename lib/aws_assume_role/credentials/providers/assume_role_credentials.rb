@@ -14,7 +14,7 @@ class AwsAssumeRole::Credentials::Providers::AssumeRoleCredentials
     #
     #
 
-    STS_KEYS = [:role_arn, :role_session_name, :policy, :duration_seconds, :external_id, :client, :credentials, :region].freeze
+    STS_KEYS = %i(role_arn role_session_name policy duration_seconds external_id client credentials region).freeze
 
     def initialize(options = {})
         client_opts = {}

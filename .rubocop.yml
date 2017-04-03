@@ -25,6 +25,9 @@ Metrics/PerceivedComplexity:
 Style/IndentationWidth:
     Width: 4
 
+Style/IndentHeredoc:
+    Enabled: false
+
 Style/TrailingCommaInArguments:
     EnforcedStyleForMultiline: comma
 
