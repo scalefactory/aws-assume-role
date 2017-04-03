@@ -1,4 +1,5 @@
 # coding: utf-8
+
 $LOAD_PATH << File.expand_path("../lib", __FILE__)
 require "aws_assume_role/version"
 Gem::Specification.new do |spec|
@@ -29,7 +30,7 @@ Gem::Specification.new do |spec|
     spec.add_runtime_dependency "dry-types", "~> 0.9"
     spec.add_runtime_dependency "dry-validation", "~> 0.10"
     spec.add_runtime_dependency "gli", "~> 2.15"
-    spec.add_runtime_dependency "highline", "~> 1.7"
+    spec.add_runtime_dependency "highline", "~> 1.6"
     spec.add_runtime_dependency "i18n", "~> 0.7"
     spec.add_runtime_dependency "inifile", "~> 3.0"
     spec.add_runtime_dependency "launchy", "~> 2.4"

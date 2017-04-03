@@ -1,3 +1,6 @@
+## 0.2.1
+* Loosen requirement on highline to improve compatibility with Puppet tools (@randomvariable)
+
 ## 0.2.0
 
 * Add support for Yubikey as a source for MFA (@davbo)
