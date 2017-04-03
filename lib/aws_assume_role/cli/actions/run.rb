@@ -12,7 +12,7 @@ class AwsAssumeRole::Cli::Actions::Run < AwsAssumeRole::Cli::Actions::AbstractAc
         required(:role_arn).maybe
         required(:role_session_name).maybe
         required(:duration_seconds).maybe
-        rule(role_specification: %i(profile role_arn role_session_name duration_seconds)) do |p, r, s, d|
+        rule(role_specification: %i[profile role_arn role_session_name duration_seconds]) do |p, r, s, d|
             (p.filled? | p.empty? & r.filled?) & (r.filled? > s.filled? & d.filled?)
         end
     end

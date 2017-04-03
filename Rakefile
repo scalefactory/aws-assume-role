@@ -13,7 +13,7 @@ begin
 rescue LoadError # rubocop:disable Lint/HandleExceptions
 end
 
-task :test => %i(no_pry rubocop spec) # rubocop:disable Style/HashSyntax
+task :test => %i[no_pry rubocop spec] # rubocop:disable Style/HashSyntax
 
 task :no_pry do
     files = Dir.glob("**/**").reject { |x| x.match(/^spec|Gemfile|coverage|\.gemspec$|Rakefile/) || File.directory?(x) }
