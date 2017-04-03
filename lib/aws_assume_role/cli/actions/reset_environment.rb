@@ -27,13 +27,13 @@ class AwsAssumeRole::Cli::Actions::ResetEnvironment < AwsAssumeRole::Cli::Action
     def act_on(config)
         shell_strings = SHELL_STRINGS[config.shell_type.to_sym]
         str = ""
-        %w(AWS_ACCESS_KEY_ID
+        %w[AWS_ACCESS_KEY_ID
            AWS_SECRET_ACCESS_KEY
            AWS_SESSION_TOKEN
            AWS_PROFILE
            AWS_ASSUME_ROLE_LOG_LEVEL
            GLI_DEBUG
-           AWS_ASSUME_ROLE_KEYRING_BACKEND).each do |key|
+           AWS_ASSUME_ROLE_KEYRING_BACKEND].each do |key|
             str << format(shell_strings[:env_command], key: key) if ENV.fetch(key, false)
         end
         str << "# #{pastel.yellow t(shell_strings.fetch(:footer, 'commands.set_environment.shells.others'))}"

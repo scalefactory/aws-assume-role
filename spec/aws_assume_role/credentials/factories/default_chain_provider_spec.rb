@@ -14,14 +14,14 @@ module AwsAssumeRole::Credentials::Factories
                    profile: nil,
                    instance_profile_credentials_timeout: 1,
                    instance_profile_credentials_retries: 0,
-                   resolve: %i(
+                   resolve: %i[
                        access_key_id
                        secret_access_key
                        session_token
                        profile
                        instance_profile_credentials_timeout
                        instance_profile_credentials_retries
-                   ))
+                   ])
         end
 
         let(:chain) { DefaultChainProvider.new(config) }
