@@ -16,24 +16,25 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider < Dry::Struct
 
     attribute :access_key_id, Dry::Types["strict.string"].optional
     attribute :credentials, Dry::Types["object"].optional
-    attribute :secret_access_key, Dry::Types["strict.string"].optional
-    attribute :session_token, Dry::Types["strict.string"].optional
     attribute :duration_seconds, Dry::Types["coercible.int"].optional
     attribute :external_id, Dry::Types["strict.string"].optional
-    attribute :persist_session, Dry::Types["strict.bool"].default(true)
+    attribute :instance_profile_credentials_retries, Dry::Types["strict.int"].default(0)
+    attribute :instance_profile_credentials_timeout, Dry::Types["coercible.float"].default(1.0)
+    attribute :mfa_serial, Dry::Types["strict.string"].optional
+    attribute :no_profile, Dry::Types["strict.bool"].default(false)
     attribute :path, Dry::Types["strict.string"].optional
-    attribute :profile, Dry::Types["strict.string"].optional
+    attribute :persist_session, Dry::Types["strict.bool"].default(true)
     attribute :profile_name, Dry::Types["strict.string"].optional
+    attribute :profile, Dry::Types["strict.string"].optional
     attribute :region, Dry::Types["strict.string"].optional
     attribute :role_arn, Dry::Types["strict.string"].optional
     attribute :role_session_name, Dry::Types["strict.string"].optional
+    attribute :secret_access_key, Dry::Types["strict.string"].optional
     attribute :serial_number, Dry::Types["strict.string"].optional
-    attribute :mfa_serial, Dry::Types["strict.string"].optional
-    attribute :use_mfa, Dry::Types["strict.bool"].default(false)
-    attribute :no_profile, Dry::Types["strict.bool"].default(false)
+    attribute :session_token, Dry::Types["strict.string"].optional
     attribute :source_profile, Dry::Types["strict.string"].optional
-    attribute :instance_profile_credentials_retries, Dry::Types["strict.int"].default(0)
-    attribute :instance_profile_credentials_timeout, Dry::Types["coercible.float"].default(1.0)
+    attribute :use_mfa, Dry::Types["strict.bool"].default(false)
+    attribute :yubikey_oath_name, Dry::Types["strict.string"].optional
 
     def self.new(options)
         if options.respond_to? :resolve
