@@ -1,5 +1,3 @@
-# coding: utf-8
-
 $LOAD_PATH << File.expand_path("../lib", __FILE__)
 require "aws_assume_role/version"
 Gem::Specification.new do |spec|
@@ -39,7 +37,7 @@ Gem::Specification.new do |spec|
     spec.add_runtime_dependency "smartcard", "~> 0.5.6"
     spec.add_runtime_dependency "yubioath", "~> 1.2", ">= 1.2.1"
     spec.add_development_dependency "rspec", "~> 3.5"
-    spec.add_development_dependency "rubocop", "~> 0.46"
+    spec.add_development_dependency "rubocop", "0.50"
     spec.add_development_dependency "yard", "~> 0.9"
     spec.add_development_dependency "simplecov", "~> 0.13"
     spec.add_development_dependency "webmock", "~> 2.3"

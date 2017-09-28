@@ -78,7 +78,7 @@ def call_handler(klass, opts = {})
     config.add_option(:response_status_code, 200)
     config.add_option(:response_headers, {})
     config.add_option(:response_body, "")
-    opts.keys.each { |opt_name| config.add_option(opt_name) }
+    opts.each_key { |opt_name| config.add_option(opt_name) }
 
     context = Seahorse::Client::RequestContext.new(
         operation_name: operation_name,
