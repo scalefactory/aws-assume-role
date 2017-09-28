@@ -13,8 +13,7 @@ class AwsAssumeRole::Cli::Actions::AbstractAction
         logger.debug "Config initialized with #{config.to_hash}"
         result = validate_options(config.to_hash)
         logger.debug "Config validated as #{result.to_hash}"
-        return act_on(config) if result.success?
-        Ui.show_validation_errors result
+        result.success? ? act_on(config) : Ui.show_validation_errors(result)
     end
 
     private
