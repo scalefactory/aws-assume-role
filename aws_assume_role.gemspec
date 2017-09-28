@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
     spec.add_runtime_dependency "aws-sdk", "~> 2.7"
     spec.add_runtime_dependency "dry-configurable", "~> 0.5"
     spec.add_runtime_dependency "dry-struct", "~> 0.1"
-    spec.add_runtime_dependency "dry-types", "~> 0.9"
+    spec.add_runtime_dependency "dry-types", "~> 0.12"
     spec.add_runtime_dependency "dry-validation", "~> 0.10"
     spec.add_runtime_dependency "gli", "~> 2.15"
     spec.add_runtime_dependency "highline", "~> 1.6"
