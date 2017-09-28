@@ -249,6 +249,18 @@ or GNOME Keyring. To load alternatives, set the following environment variables:
 These are also available in Ruby as the `AwsAssumeRole.Config.backend_plugin` and
 `AwsAssumeRole.Config.backend_plugin` attributes.
 
+
+Development
+-----------
+
+Tests are conducted by Travis.
+
+You can run these locally using Rake:
+
+```shell
+bundle exec rake test
+```
+
 License
 -------
 
