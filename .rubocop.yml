@@ -22,10 +22,10 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
     Enabled: false
 
-Style/IndentationWidth:
+Layout/IndentationWidth:
     Width: 4
 
-Style/IndentHeredoc:
+Layout/IndentHeredoc:
     Enabled: false
 
 Style/TrailingCommaInArguments:
@@ -40,7 +40,7 @@ Style/ClassAndModuleChildren:
 Style/Documentation:
     Enabled: false
 
-Style/VariableName:
+Naming/VariableName:
     Enabled: false
 
 Style/StringLiterals:
