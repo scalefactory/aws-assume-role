@@ -1,5 +1,3 @@
-# coding: utf-8
-
 $LOAD_PATH << File.expand_path("../lib", __FILE__)
 require "aws_assume_role/version"
 Gem::Specification.new do |spec|
