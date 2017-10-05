@@ -3,7 +3,6 @@ aws-assume-role
 [![Build Status](https://travis-ci.org/scalefactory/aws-assume-role.svg?branch=master)](https://travis-ci.org/scalefactory/aws-assume-role)
 [![Coverage Status](https://coveralls.io/repos/github/scalefactory/aws-assume-role/badge.svg?branch=master)](https://coveralls.io/github/scalefactory/aws-assume-role?branch=master)
 [![Code Climate](https://codeclimate.com/github/scalefactory/aws-assume-role/badges/gpa.svg)](https://codeclimate.com/github/scalefactory/aws-assume-role)
-[![Dependencies](https://img.shields.io/librariesio/github/scalefactory/aws-assume-role.svg)](https://libraries.io/rubygems/aws_assume_role)
 [![Gem Version](https://badge.fury.io/rb/aws_assume_role.svg)](https://badge.fury.io/rb/aws_assume_role)
 
 aws-assume-role is a utility intended for developer and operator environments
