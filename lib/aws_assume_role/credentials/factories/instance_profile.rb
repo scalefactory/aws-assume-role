@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "abstract_factory"
 
 class AwsAssumeRole::Credentials::Factories::InstanceProfile < AwsAssumeRole::Credentials::Factories::AbstractFactory

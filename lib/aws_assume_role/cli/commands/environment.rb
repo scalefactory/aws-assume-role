@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../actions/set_environment"
 require_relative "../actions/reset_environment"
 

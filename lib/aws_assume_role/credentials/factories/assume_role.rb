@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "abstract_factory"
 require_relative "../providers/assume_role_credentials"
 require_relative "../providers/mfa_session_credentials"

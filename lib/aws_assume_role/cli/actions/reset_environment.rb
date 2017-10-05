@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "includes"
 
 class AwsAssumeRole::Cli::Actions::ResetEnvironment < AwsAssumeRole::Cli::Actions::AbstractAction

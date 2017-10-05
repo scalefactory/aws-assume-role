@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "i18n"
 require "active_support/json"
 require "active_support/core_ext/object/blank"

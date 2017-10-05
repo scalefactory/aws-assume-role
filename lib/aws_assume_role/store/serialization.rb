@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AwsAssumeRole::Store::Serialization
     module_function
 

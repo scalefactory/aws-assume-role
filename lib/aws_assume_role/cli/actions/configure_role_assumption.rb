@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "abstract_action"
 
 class AwsAssumeRole::Cli::Actions::ConfigureRoleAssumption < AwsAssumeRole::Cli::Actions::AbstractAction

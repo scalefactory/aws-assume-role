@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "abstract_action"
 require_relative "../../store/shared_config_with_keyring"
 

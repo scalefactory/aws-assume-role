@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "abstract_factory"
 require_relative "../providers/shared_keyring_credentials"
 

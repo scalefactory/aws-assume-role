@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Originally from https://github.com/aws/aws-sdk-ruby/blob/master/aws-sdk-core/spec/spec_helper.rb
 
 require "simplecov"

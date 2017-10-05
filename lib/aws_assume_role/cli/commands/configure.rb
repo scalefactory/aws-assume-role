@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../actions/configure_profile"
 require_relative "../actions/configure_role_assumption"
 

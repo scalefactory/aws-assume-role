@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../actions/list_profiles"
 
 module AwsAssumeRole::Cli

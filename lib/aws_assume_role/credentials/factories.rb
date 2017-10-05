@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "factories/repository"
 require_relative "factories/abstract_factory"
 require_relative "factories/default_chain_provider"

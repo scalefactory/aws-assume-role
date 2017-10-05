@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../actions/delete_profile"
 
 module AwsAssumeRole::Cli

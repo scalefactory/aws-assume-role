@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "includes"
 require_relative "serialization"
 require_relative "../configuration"
@@ -10,7 +12,7 @@ module AwsAssumeRole::Store::Keyring
 
     module_function
 
-    KEYRING_KEY = "AwsAssumeRole".freeze
+    KEYRING_KEY = "AwsAssumeRole"
 
     def semaphore
         @semaphore ||= Mutex.new

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "includes"
 require_relative "abstract_factory"
 
