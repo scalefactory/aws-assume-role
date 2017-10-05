@@ -1,6 +1,9 @@
+## 1.0.0
+* Fix deprecation warnings for dry-types
+* Minimum Ruby version is now 2.2
+
 ## 0.2.2
 * Add Yubikey OATH support to the default chain provider (@randomvariable)
-
 
 ## 0.2.1
 * Loosen requirement on highline to improve compatibility with Puppet tools (@randomvariable)

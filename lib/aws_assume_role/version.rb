@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module AwsAssumeRole
-    VERSION = "0.2.2"
+    VERSION = "1.0.0".freeze
 end
