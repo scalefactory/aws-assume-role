@@ -12,7 +12,7 @@ module AwsAssumeRole::Store::Keyring
 
     module_function
 
-    KEYRING_KEY = "AwsAssumeRole"
+    KEYRING_KEY = "AwsAssumeRole".freeze
 
     def semaphore
         @semaphore ||= Mutex.new

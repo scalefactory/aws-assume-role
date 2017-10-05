@@ -1,5 +1,6 @@
 ---
 AllCops:
+    TargetRubyVersion: 2.2
     DisplayCopNames: true
     Exclude:
     - 'lib/aws_assume_role/vendored/**/*.rb'

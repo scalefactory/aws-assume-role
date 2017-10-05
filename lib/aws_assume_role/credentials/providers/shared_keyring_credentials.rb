@@ -20,7 +20,7 @@ class AwsAssumeRole::Credentials::Providers::SharedKeyringCredentials < ::Aws::S
         @region = config.profile_region(@profile_name)
         @role_arn = config.profile_role(@profile_name)
         attempted_credential = config.credentials(options)
-        return unless attempted_credential&.set?
+        return unless attempted_credential && attempted_credential.set?
         @credentials = attempted_credential
     end
 

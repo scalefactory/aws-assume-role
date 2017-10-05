@@ -80,11 +80,11 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider < Dry::Struct
 
     def resolve_final_credentials(explicit_default_profile = false)
         resolve_credentials(:credential_provider, true, explicit_default_profile)
-        return @credentials if @credentials&.set? && !use_mfa && !role_arn
+        return @credentials if @credentials && @credentials.set? && !use_mfa && !role_arn
         resolve_credentials(:second_factor_provider, true, explicit_default_profile)
-        return @credentials if @credentials&.set?
+        return @credentials if @credentials && @credentials.set?
         resolve_credentials(:instance_role_provider, true, explicit_default_profile)
-        return @credentials if @credentials&.set?
+        return @credentials if @credentials && @credentials.set?
         nil
     end
 
@@ -92,13 +92,13 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider < Dry::Struct
         factories_to_try = Repository.factories[type]
         factories_to_try.each do |x|
             options = to_h
-            options[:credentials] = credentials if credentials&.set?
+            options[:credentials] = credentials if credentials && credentials.set?
             logger.debug "About to try credential lookup with #{x}"
             factory = x.new(options)
             @region ||= factory.region
             @profile ||= factory.profile
             @role_arn ||= factory.role_arn
-            next unless factory.credentials&.set?
+            next unless factory.credentials && factory.credentials.set?
             logger.debug "Profile currently #{@profile}"
             next if explicit_default_profile && (@profile == "default") && (@profile != @original_profile)
             @credentials ||= factory.credentials

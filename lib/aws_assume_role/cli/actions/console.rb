@@ -9,9 +9,9 @@ class AwsAssumeRole::Cli::Actions::Console < AwsAssumeRole::Cli::Actions::Abstra
     include AwsAssumeRole::Ui
     include AwsAssumeRole::Logging
 
-    FEDERATION_URL = "https://signin.aws.amazon.com/federation"
-    CONSOLE_URL = "https://console.aws.amazon.com"
-    GENERIC_SIGNIN_URL = "https://signin.aws.amazon.com/console"
+    FEDERATION_URL = "https://signin.aws.amazon.com/federation".freeze
+    CONSOLE_URL = "https://console.aws.amazon.com".freeze
+    GENERIC_SIGNIN_URL = "https://signin.aws.amazon.com/console".freeze
     SIGNIN_URL = [FEDERATION_URL, "?Action=getSigninToken", "&Session=%s"].join
     LOGIN_URL = [FEDERATION_URL, "?Action=login", "&Destination=%s", "&SigninToken=%s"].join
 
