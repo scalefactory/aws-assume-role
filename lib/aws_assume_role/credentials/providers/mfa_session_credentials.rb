@@ -30,7 +30,7 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
 
     def initialize(options)
         options.each { |key, value| instance_variable_set("@#{key}", value) }
-        @permanent_credentials ||= credentials
+        @permanent_credentials ||= @credentials
         @credentials = nil
         @serial_number = resolve_serial_number(serial_number)
         AwsAssumeRole::Vendored::Aws::RefreshingCredentials.instance_method(:initialize).bind(self).call(options)
