@@ -1,3 +1,7 @@
+## 1.0.1
+* Fix setting environment variable throwing string frozen error (@mrprimate)
+* Fix incompatibility with version 0.4 of dry-struct (@tomhaynes)
+
 ## 1.0.0
 * Fix deprecation warnings for dry-types
 * Minimum Ruby version is now 2.2
