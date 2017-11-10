@@ -40,7 +40,7 @@ class AwsAssumeRole::Cli::Actions::SetEnvironment < AwsAssumeRole::Cli::Actions:
     def act_on(config)
         credentials = try_for_credentials config.to_h
         shell_strings = SHELL_STRINGS[config.shell_type.to_sym]
-        str = ""
+        str = String.new("")
         [
             [:access_key_id, "AWS_ACCESS_KEY_ID"],
             [:secret_access_key, "AWS_SECRET_ACCESS_KEY"],
