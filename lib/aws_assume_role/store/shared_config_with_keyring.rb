@@ -227,6 +227,10 @@ class AwsAssumeRole::Store::SharedConfigWithKeyring < AwsAssumeRole::Vendored::A
     def save_configuration
         if File.exist? determine_config_path
             bytes_required = File.size(determine_config_path)
+            # Overwrite the current .config file with random bytes to eliminate
+            # unencrypted credentials.
+            # This won't account for COW filesystems or SSD wear-levelling but
+            # is a best effort protection.
             random_bytes = SecureRandom.random_bytes(bytes_required)
             File.write(determine_config_path, random_bytes)
         else
