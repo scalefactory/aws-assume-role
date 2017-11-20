@@ -19,7 +19,7 @@ module AwsAssumeRole::Ui
     end
 
     def input
-        @input ||= HighLine.new
+        @input ||= HighLine.new($stdin, $stderr)
     end
 
     def validation_errors_to_s(result)
