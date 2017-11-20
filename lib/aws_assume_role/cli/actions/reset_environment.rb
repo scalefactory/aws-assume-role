@@ -28,7 +28,7 @@ class AwsAssumeRole::Cli::Actions::ResetEnvironment < AwsAssumeRole::Cli::Action
 
     def act_on(config)
         shell_strings = SHELL_STRINGS[config.shell_type.to_sym]
-        str = ""
+        str = String.new("")
         %w[AWS_ACCESS_KEY_ID
            AWS_SECRET_ACCESS_KEY
            AWS_SESSION_TOKEN
