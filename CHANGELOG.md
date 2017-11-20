@@ -1,5 +1,12 @@
+## 1.0.4
+* Ensure ~/.aws exists before saving configuration
+
+## 1.0.3
+* Fix setting environment variable throwing string frozen error (@timbirk)
+
 ## 1.0.2
 * Display credential prompts on stderr to allow shell eval to work (@timbirk)
+
 ## 1.0.1
 * Fix setting environment variable throwing string frozen error (@mrprimate)
 * Fix incompatibility with version 0.4 of dry-struct (@tomhaynes)
