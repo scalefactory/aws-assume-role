@@ -45,7 +45,7 @@ require introspection bindings as well as Gnone Keyring, by installing one of th
 
 ``` sh
 # Debian/Ubuntu
-apt-get install gnome-keyring libgirepository1.0-dev
+apt-get install gnome-keyring libgirepository1.0-dev libgnome-keyring-common libgnome-keyring-dev
 
 # Fedora
 dnf install gobject-introspection-devel
