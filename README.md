@@ -25,7 +25,7 @@ For more information on role assumption, see the [AWS documentation](https://doc
 
 Requirements
 ------------
-*   Ruby ≥ 2.3.5
+*   Ruby ≥ 2.2
 *   macOS Keychain / GNOME Keyring
 *   At least one account with Amazon Web Services
 *   An IAM role configured in the target account
