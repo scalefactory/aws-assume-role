@@ -9,7 +9,7 @@ aws-assume-role is a utility intended for developer and operator environments
 who need to use 2FA and role assumption to access AWS services.
 
 aws-assume-role can store both AWS access keys and ephemeral session tokens in
-OS credential vaults - Keychain on OSX and Seahorse on Gnome.
+OS credential vaults - Keychain on OSX and Keyring on Gnome.
 
 Why?
 ---
@@ -25,7 +25,7 @@ For more information on role assumption, see the [AWS documentation](https://doc
 
 Requirements
 ------------
-*   Ruby ≥ 2.2
+*   Ruby ≥ 2.3.5
 *   macOS Keychain / GNOME Keyring
 *   At least one account with Amazon Web Services
 *   An IAM role configured in the target account
