@@ -111,6 +111,17 @@ to connect to the Yubikey, this itself depends upon some C libraries being insta
 [platform specific instructions](https://github.com/costan/smartcard/blob/master/BUILD#L19)
 for installing these libraries PC/SC.
 
+Testing a profile
+-----------------
+You can test a profile using
+```sh
+> aws-assume-role test -p company_sso
+Logged in as:
+    User: 9999999999
+    Account: arn:aws:iam::3333333333:user/username
+    ARN: AIDAIOSWINGTB
+
+```
 
 Running applications
 --------------------
@@ -132,6 +143,15 @@ Please provide an MFA token
 000000
 ```
 
+Listing available profiles
+--------------------------
+Configured profiles can be listed:
+```sh
+> aws-assume-role list
+company_sso
+company2_sso
+company3_sso
+```
 
 Deleting a profile
 ------------------
