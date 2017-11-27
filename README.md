@@ -9,7 +9,7 @@ aws-assume-role is a utility intended for developer and operator environments
 who need to use 2FA and role assumption to access AWS services.
 
 aws-assume-role can store both AWS access keys and ephemeral session tokens in
-OS credential vaults - Keychain on OSX and Seahorse on Gnome.
+OS credential vaults - Keychain on OSX and Keyring on Gnome.
 
 Why?
 ---
@@ -45,7 +45,7 @@ require introspection bindings as well as Gnone Keyring, by installing one of th
 
 ``` sh
 # Debian/Ubuntu
-apt-get install gnome-keyring libgirepository1.0-dev
+apt-get install gnome-keyring libgirepository1.0-dev libgnome-keyring-common libgnome-keyring-dev
 
 # Fedora
 dnf install gobject-introspection-devel
@@ -65,14 +65,14 @@ aws-assume-role works best if you also store permanent credentials in your keyst
 ``` sh
 > aws-assume-role configure
 Enter the profile name to save into configuration
-company-sso
+company_sso
 Enter the AWS region you would like to default to:
 eu-west-1
 Enter the AWS Access Key ID to use for this profile:
 1234567890010
 Enter the AWS Secret Access Key to use for this profile:
 abcdefghijklmnopqrstuvwzyx1
-Profile `company-sso` saved to '/home/growthsmith/.aws/config'
+Profile `company_sso` saved to '/home/growthsmith/.aws/config'
 ```
 
 ### Configuring roles
@@ -80,7 +80,7 @@ Now that you've set up permanent credentials in your OS credential store, you ca
 set up a role that you will assume in every day use:
 
 ``` sh
-> aws-assume-role configure role -p company-dev --source-profile company-sso  \
+> aws-assume-role configure role -p company-dev --source-profile company_sso  \
 --role-arn=arn:aws:iam::000000000001:role/ViewEC2 --role-session-name=growthsmith \
 --mfa-serial automatic
 ```
@@ -101,9 +101,9 @@ token without prompting for user input. To use this specify
 `--yubikey-oath-name` when calling configure role.
 
 ``` sh
-> aws-assume-role configure role -p company-dev --source-profile company-sso  \
+> aws-assume-role configure role -p company-dev --source-profile company_sso  \
 --role-arn=arn:aws:iam::000000000001:role/ViewEC2 --role-session-name=growthsmith \
---mfa-serial automatic --yubikey-oath-name "Amazon Web Services:myuser@company-sso"
+--mfa-serial automatic --yubikey-oath-name "Amazon Web Services:myuser@company_sso"
 ```
 
 _Yubikey Support_: `aws-assume-role` uses the [smartcard gem](https://rubygems.org/gems/smartcard)
@@ -111,6 +111,17 @@ to connect to the Yubikey, this itself depends upon some C libraries being insta
 [platform specific instructions](https://github.com/costan/smartcard/blob/master/BUILD#L19)
 for installing these libraries PC/SC.
 
+Testing a profile
+-----------------
+You can test a profile using
+```sh
+> aws-assume-role test -p company_sso
+Logged in as:
+    User: 9999999999
+    Account: arn:aws:iam::3333333333:user/username
+    ARN: AIDAIOSWINGTB
+
+```
 
 Running applications
 --------------------
@@ -132,15 +143,24 @@ Please provide an MFA token
 000000
 ```
 
+Listing available profiles
+--------------------------
+Configured profiles can be listed:
+```sh
+> aws-assume-role list
+company_sso
+company2_sso
+company3_sso
+```
 
 Deleting a profile
 ------------------
 If a set of credentials key needs revoking, or the profile isn't relevant anymore:
 ``` sh
-> aws-assume-role delete -p company-sso
-Please type the name of the profile, i.e. company-sso , to continue deletion.
-company-sso
-Profile company-sso deleted
+> aws-assume-role delete -p company_sso
+Please type the name of the profile, i.e. company_sso , to continue deletion.
+company_sso
+Profile company_sso deleted
 ```
 
 Migrating AWS CLI profiles
@@ -149,8 +169,8 @@ It's better to revoke the existing keys and generate new ones. We try to overwri
 file with random data, but this does not take care of ~/.aws/credentials and does not account for SSD wear
 levelling or copy-on-write snapshots.
 ```
-aws-assume-role migrate -p company-sso
-Profile 'company-sso' migrated to keyring.
+aws-assume-role migrate -p company_sso
+Profile 'company_sso' migrated to keyring.
 ```
 
 Exporting environment variables
@@ -184,7 +204,7 @@ Given that `aws-assume-role` has knowledge of your role ARNs via AWS CLI profile
 get to the AWS console for that role/account using
 
 ``` sh
-> aws-assume-role console -p company-sso
+> aws-assume-role console -p company_sso
 ```
 
 `aws-assume-role` will first attempt to log in and get a federated UI link, and
