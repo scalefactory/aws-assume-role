@@ -1,3 +1,6 @@
+## 1.0.5
+* Escape run commands properly (@mrprimate)
+
 ## 1.0.4
 * Ensure ~/.aws exists before saving configuration
 
