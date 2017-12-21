@@ -14,7 +14,7 @@ class AwsAssumeRole::Runner < Dry::Struct
 
     def initialize(options)
         super(options)
-        command_to_exec = command.join(" ")
+        command_to_exec = command.map(&:shellescape).join(" ")
         process_credentials unless credentials.blank?
         system environment, command_to_exec
         exit_status = $CHILD_STATUS.exitstatus
