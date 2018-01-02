@@ -2,6 +2,9 @@
 
 $LOAD_PATH << File.expand_path("../lib", __FILE__)
 require "aws_assume_role/version"
+
+PLATFORM = ENV.fetch("PLATFORM", Gem::Platform.local.os)
+
 Gem::Specification.new do |spec|
     spec.name          = "aws_assume_role"
     spec.version       = AwsAssumeRole::VERSION
@@ -22,7 +25,7 @@ Gem::Specification.new do |spec|
     spec.bindir        = "bin"
     spec.executables   = spec.files.grep(%r{^bin/aws}) { |f| File.basename(f) }
     spec.require_paths = ["lib"]
-
+    spec.platform      = PLATFORM
     spec.add_runtime_dependency "activesupport", "~> 4.2"
     spec.add_runtime_dependency "aws-sdk", "~> 2.7"
     spec.add_runtime_dependency "dry-configurable", "~> 0.5"
@@ -44,10 +47,10 @@ Gem::Specification.new do |spec|
     spec.add_development_dependency "simplecov", "~> 0.13"
     spec.add_development_dependency "webmock", "~> 2.3"
 
-    case Gem::Platform.local.os
-    when "linux"
+    case PLATFORM
+    when /linux|bsd/
         spec.add_dependency "gir_ffi-gnome_keyring", "~> 0.0", ">= 0.0.3"
-    when "darwin"
+    when /darwin/
         spec.add_dependency "ruby-keychain", "~> 0.3", ">= 0.3.2"
     end
 end
