@@ -1,3 +1,5 @@
+## 1.0.6
+* Determine gem dependencies for OS X & Linux at install time (@randomvariable)
 ## 1.0.5
 * Escape run commands properly (@mrprimate)
 
