@@ -11,8 +11,6 @@ jobs:
     - stage: deploy
       rvm: 2.3
       script: bundle exec rake setup_credentials && chmod 0600 /home/travis/.gem/credentials && bundle exec rake publish
-      secure: "VQtFNu/kHZdKrmURVx4cPgW4uo+7klWQkMA9fJVYvyQzYoELmo/Q5L/75AE8mzNzXHTsRfRu/ggA5vlyHtXpQguz0Tz/pZ0pi24HKIkFFYzmXL4xb2depLTLu2DBFOZUPhshyIEJ9rVhT4sE2E7TOZErhJ1od5NQFAn1I17NyF3qStiORpjptSeU12OReNrlx0kquiZjyYklxO1M3ybzWHLmxVYNRjabqjkm0YB2NrTTFraeivixpRLSolsbzxRBxZwT7UOv/zbEcp9RGZDHxtxcD71rq8KaCXWzscErrcCiJtzrnHUHjAULFFkCPD+rCSbJJkydjxFjg3lVJbf5JulZYr4VzWLimjLUZv4HeeN+bvtwrPKCOe0KxRnsAr4kieX16MO/5ehkNHzjFyiSfkVGWK0uoWGNE9MdCwHLo+o+cz3XoKMQFZhmSheuxKKibr0m9PedynQQdg7bc3kB3UaYurrDs5ldb8e97BnZJrTaTD3/8vaWv30MFuZ+Nw/Hi2uEP7nIZoZfz2D8S6a83YLAC7YAfnf/1lMCU2mfBSLg6L8H26h5bmOUfg10ZNiJDW0g0WqbjbI0xUcMjHd5qdPYP1bH4qtXAdDp9I09NHpteEo42P58milj7n7qWAx+TiRnQR0/jBJL+dXGwYRfoXuzI+4QDy8sq20Cvi34RPU="
-
 stages:
   - name: test
   - name: deploy
