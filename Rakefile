@@ -28,18 +28,18 @@ DISTRIBUTIONS = [
 ].freeze
 
 CREDENTIALS = {
-  rubygems_api_key: ENV.fetch("API_KEY", "null")
+    rubygems_api_key: ENV.fetch("API_KEY", "null"),
 }.freeze
 
 task :setup_credentials do
-  FileUtils.mkdir_p(File.expand_path("~/.gem"))
-  File.write(File.expand_path("~/.gem/credentials"), CREDENTIALS.to_yaml)
+    FileUtils.mkdir_p(File.expand_path("~/.gem"))
+    File.write(File.expand_path("~/.gem/credentials"), CREDENTIALS.to_yaml)
 end
 
 task publish: [:build] do
-  Dir.glob("#{File.dirname(__FILE__)}/pkg/*.gem") do |g|
-    sh "gem push #{g}"
-  end
+    Dir.glob("#{File.dirname(__FILE__)}/pkg/*.gem") do |g|
+        sh "gem push #{g}"
+    end
 end
 
 namespace :build_arch do
