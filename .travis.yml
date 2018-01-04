@@ -8,15 +8,14 @@ jobs:
   include:
     - stage: test
       script: bundle exec rake
-    - stage: setup_credentials
-      script: bundle exec rake setup_credentials
+    - stage: deploy
+      rvm: 2.3
+      script: bundle exec rake setup_credentials && bundle exec rake publish
       secure: "nyqCK9Yul0dJCou/Txw8DQ9eXUZGe+CbNj8nXUvmqu0PRMiWesrqzh3XvZR8j2WS+LSfpWQ8esu6RPIW8HND0FA8byeUQhB2UraafnEPGljjwbby2L+Y38JPAg3d8cWvH1jLNUsUAMOFjw2kcCtdnaolVmGEu0EuQ5aITPBdMNjnwiCd4lYD+a17bpX0WCKjOHcgRH6HoQeU6BEnCNE7AmpA1OXbry1EMA/D8P6g1ez51iibf9LYcyfy3NqUIRavhpRrUAvvHJbIwFOHK06Y19OYKE6OB443mb9A9o8zn67aqJ0fSVRK+8RK/p54XtF8nQ8FN/ccnpkekA1BlA2wgxbdxFbzX+Pm/SRZXLyCjdTO9CcgTkxb9+FGJv8/VYaPrdoVx9iMIzg8flh7TfEuiXX8/H1btelV+LDHa9O6qtr/bmZx7J/uCgt32tV2eTqsYsKxvy1Afs3liXsg4JCrhew/59oJPDFezv8vVweD/iGykQKyTqWwcMfPqVJtfJf/jTpTFQ8U4XZzjVxBPROrFiK3IuDQGVUDsoLuoPD8gSA/o36/p5wJSDTILPdFrA2Gl74LoohO+kjCC4fFRr/MCiEJbFQtgqEhSVi+8/gO1UVrgRh9kYSWYcHDtitPiGrNx3rqZoGjRDHMDUhDS0WG9+iWZ9UnyR2MeYpxtCp5YW4="
     - stage: deploy
       script: bundle exec rake publish
 stages:
   - name: test
-  - name: setup_credentials
-    if: tag =~ ^v
   - name: deploy
     if: tag =~ ^v
 notifications:
