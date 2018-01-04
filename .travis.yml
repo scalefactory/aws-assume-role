@@ -1,12 +1,12 @@
 language: ruby
-rvm:
-- 2.2
-- 2.3
 sudo: false
 script: bundle exec rake
 jobs:
   include:
     - stage: test
+      rvm:
+      - 2.2
+      - 2.3
       script: bundle exec rake
     - stage: deploy
       rvm: 2.3
