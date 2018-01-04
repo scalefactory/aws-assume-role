@@ -1,17 +1,24 @@
 language: ruby
 rvm:
 - 2.2
-- 2.3.0
+- 2.3
 sudo: false
 script: bundle exec rake
-deploy:
-  provider: rubygems
-  api_key:
-    secure: H6MYP5cWFC0BtqrxW6ahc1RFxywtyKRFjGlSpyoBM+AH2y8U194toWQdGyO/QMRQVr7vAZf+MdxYTutDvnBEkwQbof6QBJ1+4GFWSqFgYAVEV5Ddva0ea5dVE8xC3rMRvd+i5KTzwuVNX/+Cux49v2wGRWZLKOmBSWbujsL8SbpdKaPi+qsClkdz3YTrHpGEEWTPNBNTwDMlg+qAX3UkqoAxD5ebrUaFPdJR83yMSGUPfTm/urlKvkx85MONuj7lPL1CyoYJCvy31bE6CWGq2L/+2Fnk8RvNMCaDffY+8YjKhWduBLrGuUYWf+ZcERxW6AxDy6BFIkekpFwpeaDmrdfSTK0aELSZogGqs9VHs9O1pTApdS/NRYDzxC9hmlvub80xC2uI1Vnhn04Z95Gh9KYh0H20UnlBJJ7ewvFPHzQ3zK8Z2O3kJOeZo0rX2d3yGOydyHlf1dX/auGnn8QVcr7w1jERQDLi5ZEAR+EGnYROvfGKjfP9rgaLoouTbEGXx7KV9QQjLUsmQ0q2yu+HoVlQaDtv7VEQTtFnvdmiVGYbWj+DhaquvTmHyiizO7hFOfvVYYFyOM2iFoRCY+dT3kapqc0DM94BUjxV3tMZX6MYNYfwnNwhNNpTXLVvVXP9cShL+ogwY/E0C2Fg2CYdY5/Ioe6hUbAiPx79dwzVfic=
-  gem: aws_assume_role
-  on:
-    tags: true
-    repo: scalefactory/aws-assume-role
+jobs:
+  include:
+    - stage: test
+      script: bundle exec rake
+    - stage: setup_credentials
+      script: bundle exec rake setup_credentials
+      secure: "nyqCK9Yul0dJCou/Txw8DQ9eXUZGe+CbNj8nXUvmqu0PRMiWesrqzh3XvZR8j2WS+LSfpWQ8esu6RPIW8HND0FA8byeUQhB2UraafnEPGljjwbby2L+Y38JPAg3d8cWvH1jLNUsUAMOFjw2kcCtdnaolVmGEu0EuQ5aITPBdMNjnwiCd4lYD+a17bpX0WCKjOHcgRH6HoQeU6BEnCNE7AmpA1OXbry1EMA/D8P6g1ez51iibf9LYcyfy3NqUIRavhpRrUAvvHJbIwFOHK06Y19OYKE6OB443mb9A9o8zn67aqJ0fSVRK+8RK/p54XtF8nQ8FN/ccnpkekA1BlA2wgxbdxFbzX+Pm/SRZXLyCjdTO9CcgTkxb9+FGJv8/VYaPrdoVx9iMIzg8flh7TfEuiXX8/H1btelV+LDHa9O6qtr/bmZx7J/uCgt32tV2eTqsYsKxvy1Afs3liXsg4JCrhew/59oJPDFezv8vVweD/iGykQKyTqWwcMfPqVJtfJf/jTpTFQ8U4XZzjVxBPROrFiK3IuDQGVUDsoLuoPD8gSA/o36/p5wJSDTILPdFrA2Gl74LoohO+kjCC4fFRr/MCiEJbFQtgqEhSVi+8/gO1UVrgRh9kYSWYcHDtitPiGrNx3rqZoGjRDHMDUhDS0WG9+iWZ9UnyR2MeYpxtCp5YW4="
+    - stage: deploy
+      script: bundle exec rake publish
+stages:
+  - name: test
+  - name: setup_credentials
+    if: tag =~ ^v
+  - name: deploy
+    if: tag =~ ^v
 notifications:
   slack:
     secure: RmJmJSSDI8qdIpM2KKYoXX2mpcL85YZ9r9gF4rauZH9TuqnYOPP3kQ5iYJsE0VUTuZpuvQ8Axoux5IQr+IDK7kMrmrI0iaZp1dAR9tGK+aLF73sprOmQEou6HIoDs97UQhOWlsAUR8max/7WYdJYJ1o78dqavfFtOy0VcHCkUMRf+WxcKzz+8MunsocIYi0HXuz5vC3RAZCOaK2h8epXzmnWq0ke8YeTmddpDWC85wzeDNjA9T1j5WD+y6gC9F0vyaqVqDCsCXlbRKZl7a1TU9QGDVyBzowoGsWmTpFR80v4CKofAn6nnMRqblwATOS1jMT+HC+Yku29qFzXPugYa2KAUSQaYQiOe+TE5IDa2Exe/57ZQCOq4ve8gKSE9aQXh4Riq3u8qccM+UeoQdcwgXQIciTeWjqi4LQro6Dbyrv8XrUbxdG0VPsWmf49jbWgq6PPAJqdcbXr9eGb+81uJ2REa1vhDYZu4T3JHv4erd5QlyYWzeBJ/LMQav/C5mnMF43jg8DzZ2g0BZBao/reO9xcZre/ka8eOus9Ll1i+8PCxmFZMx2KDPC9i5R7bXL/CwPBjzFInmvHM0cgKjxrRSY6xMWSPyBbgdsKJl2qag74K5xG+2VPlMcVx0ikTKVjsja5iPlOYKhflGAfCKvpzPcd2QoEWg8jZYqZtO9Nj+M=

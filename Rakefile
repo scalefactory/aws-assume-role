@@ -2,6 +2,7 @@
 
 require "aws_assume_role/version"
 require "bundler/gem_tasks"
+require "yaml"
 
 task default: :test
 
@@ -26,12 +27,30 @@ DISTRIBUTIONS = [
     "universal-openbsd",
 ].freeze
 
+CREDENTIALS = {
+  rubygems: {
+    api_key: ENV.fetch("API_KEY", "null"),
+    address: "http://rubygems.org"
+  }
+}.freeze
+
+task setup_credentials: do
+  FileUtils.mkdir_p(File.expand_path("~/.gem"))
+  File.write(File.expand_path("~/.gem/credentials", CREDENTIALS.to_yaml)
+end
+
+task publish: [:build] do
+  Dir.glob("#{File.dirname(__FILE__)}/pkg/*.gem") do |g|
+    sh "gem push #{g}"
+  end
+end
+
 namespace :build_arch do
     DISTRIBUTIONS.each do |arch|
         desc "build binary gem for #{arch}"
         task arch do
             sh "cd #{File.dirname(__FILE__)} && PLATFORM=#{arch} gem build aws_assume_role.gemspec"
-            sh "cd #{File.dirname(__FILE__)} && mkdir -p pkg"
+            FileUtils.mkdir_p(File.join(File.dirname(__FILE__)), "pkg")
             sh "cd #{File.dirname(__FILE__)} && mv *.gem pkg/"
         end
     end
