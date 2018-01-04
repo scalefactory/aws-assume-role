@@ -47,7 +47,7 @@ namespace :build_arch do
         desc "build binary gem for #{arch}"
         task arch do
             sh "cd #{File.dirname(__FILE__)} && PLATFORM=#{arch} gem build aws_assume_role.gemspec"
-            FileUtils.mkdir_p(File.join(File.dirname(__FILE__)), "pkg")
+            FileUtils.mkdir_p(File.join(File.dirname(__FILE__), "pkg"))
             sh "cd #{File.dirname(__FILE__)} && mv *.gem pkg/"
         end
     end
