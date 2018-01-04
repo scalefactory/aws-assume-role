@@ -34,7 +34,7 @@ CREDENTIALS = {
   }
 }.freeze
 
-task setup_credentials: do
+task :setup_credentials do
   FileUtils.mkdir_p(File.expand_path("~/.gem"))
   File.write(File.expand_path("~/.gem/credentials", CREDENTIALS.to_yaml)
 end
