@@ -1,3 +1,6 @@
+## 1.1.1
+* Allow aws-assume-role to retrieve all Yubikey stored OATH tokens (@alanthing)
+
 ## 1.1.0
 * Publish separate gems for Linux, BSD and MacOS (@randomvariable)
 
