@@ -67,8 +67,7 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
         raise "Yubikey not found" unless context.readers.length == 1
         reader_name = context.readers.first
         card = Smartcard::PCSC::Card.new(context, reader_name, :shared)
-        codes = YubiOATH.new(card).calculate_all(timestamp: Time.now)
-        codes.fetch(BinData::String.new(@yubikey_oath_name))
+        YubiOATH.new(card).calculate(name: @yubikey_oath_name, timestamp: Time.now)
     end
 
     def refresh_using_mfa
