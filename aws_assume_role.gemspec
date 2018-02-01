@@ -25,9 +25,7 @@ Gem::Specification.new do |spec|
     spec.bindir        = "bin"
     spec.executables   = spec.files.grep(%r{^bin/aws}) { |f| File.basename(f) }
     spec.require_paths = ["lib"]
-    unless ENV.fetch("GENERIC_GEM", false)
-      spec.platform      = PLATFORM
-    end
+    spec.platform = PLATFORM unless ENV.fetch("GENERIC_GEM", false)
     spec.add_runtime_dependency "activesupport", "~> 4.2"
     spec.add_runtime_dependency "aws-sdk", "~> 2.7"
     spec.add_runtime_dependency "dry-configurable", "~> 0.5"
