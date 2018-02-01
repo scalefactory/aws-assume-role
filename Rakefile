@@ -36,7 +36,7 @@ task :setup_credentials do
     File.write(File.expand_path("~/.gem/credentials"), CREDENTIALS.to_yaml)
 end
 
-task publish: [:build] do
+task publish: [:build, :build_generic] do
     Dir.glob("#{File.dirname(__FILE__)}/pkg/*.gem") do |g|
         sh "gem push #{g}"
     end
@@ -54,6 +54,12 @@ namespace :build_arch do
 end
 
 task build: DISTRIBUTIONS.map { |d| "build_arch:#{d}" }
+
+task :build_generic do
+  sh "cd #{File.dirname(__FILE__)} && GENERIC_GEM=true gem build aws_assume_role.gemspec"
+  FileUtils.mkdir_p(File.join(File.dirname(__FILE__), "pkg"))
+  sh "cd #{File.dirname(__FILE__)} && mv *.gem pkg/"
+end
 
 task :no_pry do
     files = Dir.glob("**/**").reject { |x| x.match(/^spec|Gemfile|coverage|\.gemspec$|Rakefile/) || File.directory?(x) }
