@@ -8,7 +8,8 @@ PLATFORM = ENV.fetch("PLATFORM", Gem::Platform.local.os)
 Gem::Specification.new do |spec|
     spec.name          = "aws_assume_role"
     spec.version       = AwsAssumeRole::VERSION
-    spec.authors       = ["Jon Topper", "Jack Thomas", "Naadir Jeewa", "David King", "Tim Bannister", "Phil Potter", "Tom Haynes", "Alan Ivey"]
+    spec.authors       = ["Jon Topper", "Jack Thomas", "Naadir Jeewa", "David King",
+                          "Tim Bannister", "Phil Potter", "Tom Haynes", "Alan Ivey"]
     spec.email         = ["jon@scalefactory.com", "jack@scalefactory.com", "naadir@scalefactory.com", "tim@scalefactory.com"]
 
     spec.description   = "Used to fetch multiple AWS Role Credential "\
