@@ -5,12 +5,13 @@ require_relative "logging"
 
 class AwsAssumeRole::Runner < Dry::Struct
     include AwsAssumeRole::Logging
-    constructor_type :schema
     attribute :command, Dry::Types["coercible.array"].of(Dry::Types["strict.string"]).default([])
     attribute :exit_on_error, Dry::Types["strict.bool"].default(true)
     attribute :expected_exit_code, Dry::Types["strict.int"].default(0)
     attribute :environment, Dry::Types["strict.hash"].default({})
     attribute :credentials, Dry::Types["object"].optional
+
+    transform_types { |t| t.meta(omittable: true) }
 
     def initialize(options)
         super(options)

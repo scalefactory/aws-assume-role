@@ -12,9 +12,10 @@ require_relative "shared"
 require_relative "static"
 
 class AwsAssumeRole::Credentials::Factories::DefaultChainProvider < Dry::Struct
-    constructor_type :schema
     include AwsAssumeRole::Credentials::Factories
     include AwsAssumeRole::Logging
+
+    transform_types { |t| t.meta(omittable: true) }
 
     attribute :access_key_id, Dry::Types["strict.string"].optional
     attribute :credentials, Dry::Types["object"].optional

@@ -4,8 +4,9 @@ require_relative "includes"
 require_relative "logging"
 
 class AwsAssumeRole::ProfileConfiguration < Dry::Struct
-    constructor_type :schema
     include AwsAssumeRole::Logging
+    transform_types { |t| t.meta(omittable: true) }
+
     attribute :access_key_id, Dry::Types["strict.string"].optional
     attribute :credentials, Dry::Types["object"].optional
     attribute :secret_access_key, Dry::Types["strict.string"].optional

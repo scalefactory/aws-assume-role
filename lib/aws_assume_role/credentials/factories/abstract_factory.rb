@@ -9,7 +9,7 @@ class AwsAssumeRole::Credentials::Factories::AbstractFactory
     include AwsAssumeRole::Credentials::Factories
     include AwsAssumeRole::Logging
 
-    Dry::Types.register_class(Aws::SharedCredentials)
+    Dry::Types.register("aws.sharedcredentials", Aws::SharedCredentials)
     attr_reader :credentials, :region, :profile, :role_arn
 
     def initialize(_options)

@@ -1,3 +1,7 @@
+## 1.2.0
+* Support latest version of `dry-*` gems
+* Requires ruby 2.3
+
 ## 1.1.2
 * Pin breaking upstream `dry-*` gems until code is fixed in aws_assume_role
 

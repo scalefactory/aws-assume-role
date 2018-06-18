@@ -12,27 +12,33 @@ rescue LoadError
 end
 
 class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
-    constructor_type :schema
     include AwsAssumeRole::Vendored::Aws::CredentialProvider
     include AwsAssumeRole::Vendored::Aws::RefreshingCredentials
     include AwsAssumeRole::Ui
     include AwsAssumeRole::Logging
 
-    attribute :permanent_credentials, Dry::Types["object"].optional
-    attribute :credentials, Dry::Types["object"].optional
-    attribute :expiration, Dry::Types["strict.time"].default(Time.now)
-    attribute :first_time, Dry::Types["strict.bool"].default(true)
-    attribute :persist_session, Dry::Types["strict.bool"].default(true)
-    attribute :duration_seconds, Dry::Types["coercible.int"].default(3600)
-    attribute :region, AwsAssumeRole::Types::Region.optional
-    attribute :serial_number, AwsAssumeRole::Types::MfaSerial.optional.default("automatic")
+    transform_types { |t| t.meta(omittable: true) }
+
+    attribute :permanent_credentials, Dry::Types["object"]
+    attribute :credentials, Dry::Types["object"]
+    attribute :expiration, Dry::Types["strict.time"].default(Time.now).
+        constructor { |v| v.nil? ? Dry::Types::Undefined : v }
+    attribute :first_time, Dry::Types["strict.bool"].default(true).
+        constructor { |v| v.nil? ? Dry::Types::Undefined : v }
+    attribute :persist_session, Dry::Types["strict.bool"].default(true).
+        constructor { |v| v.nil? ? Dry::Types::Undefined : v }
+    attribute :duration_seconds, Dry::Types["coercible.int"].default(3600).
+        constructor { |v| v.nil? ? Dry::Types::Undefined : v }
+    attribute :region, AwsAssumeRole::Types::Region
+    attribute :serial_number, AwsAssumeRole::Types::MfaSerial.default("automatic").
+        constructor { |v| v.nil? ? Dry::Types::Undefined : v }
     attribute :yubikey_oath_name, Dry::Types["strict.string"].optional
 
     def initialize(options)
         options.each { |key, value| instance_variable_set("@#{key}", value) }
         @permanent_credentials ||= @credentials
         @credentials = nil
-        @serial_number = resolve_serial_number(serial_number)
+        @serial_number = resolve_serial_number(@serial_number)
         AwsAssumeRole::Vendored::Aws::RefreshingCredentials.instance_method(:initialize).bind(self).call(options)
     end
 

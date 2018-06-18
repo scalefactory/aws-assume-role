@@ -6,7 +6,9 @@ require_relative "abstract_factory"
 class AwsAssumeRole::Credentials::Factories::Repository
     include AwsAssumeRole::Credentials::Factories
 
-    SubFactoryRepositoryType = Types::Hash.schema(Types::Coercible::Int => Types::Strict::Array)
+    SubFactoryRepositoryType = Types::Hash.schema(
+        Types::Coercible::Int => Types::Strict::Array.meta(omittable: true)
+    )
 
     FactoryRepositoryType = Types::Hash.schema(
         credential_provider: SubFactoryRepositoryType,
