@@ -21,17 +21,17 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
 
     attribute :permanent_credentials, Dry::Types["object"]
     attribute :credentials, Dry::Types["object"]
-    attribute :expiration, Dry::Types["strict.time"].default(Time.now).
-        constructor { |v| v.nil? ? Dry::Types::Undefined : v }
-    attribute :first_time, Dry::Types["strict.bool"].default(true).
-        constructor { |v| v.nil? ? Dry::Types::Undefined : v }
-    attribute :persist_session, Dry::Types["strict.bool"].default(true).
-        constructor { |v| v.nil? ? Dry::Types::Undefined : v }
-    attribute :duration_seconds, Dry::Types["coercible.int"].default(3600).
-        constructor { |v| v.nil? ? Dry::Types::Undefined : v }
+    attribute :expiration, Dry::Types["strict.time"].default(Time.now)
+        .constructor { |v| v.nil? ? Dry::Types::Undefined : v }
+    attribute :first_time, Dry::Types["strict.bool"].default(true)
+        .constructor { |v| v.nil? ? Dry::Types::Undefined : v }
+    attribute :persist_session, Dry::Types["strict.bool"].default(true)
+        .constructor { |v| v.nil? ? Dry::Types::Undefined : v }
+    attribute :duration_seconds, Dry::Types["coercible.int"].default(3600)
+        .constructor { |v| v.nil? ? Dry::Types::Undefined : v }
     attribute :region, AwsAssumeRole::Types::Region
-    attribute :serial_number, AwsAssumeRole::Types::MfaSerial.default("automatic").
-        constructor { |v| v.nil? ? Dry::Types::Undefined : v }
+    attribute :serial_number, AwsAssumeRole::Types::MfaSerial.default("automatic")
+        .constructor { |v| v.nil? ? Dry::Types::Undefined : v }
     attribute :yubikey_oath_name, Dry::Types["strict.string"].optional
 
     def initialize(options)
