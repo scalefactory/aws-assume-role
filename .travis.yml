@@ -3,13 +3,12 @@ sudo: false
 script: bundle exec rake
 jobs:
   include:
-    - stage: test
-      rvm: 2.2
-      script: bundle exec rake
     - rvm: 2.3
       script: bundle exec rake
+    - rvm: 2.5
+      script: bundle exec rake
     - stage: deploy
-      rvm: 2.3
+      rvm: 2.5
       script: bundle exec rake setup_credentials && chmod 0600 /home/travis/.gem/credentials && bundle exec rake publish
 stages:
   - name: test

@@ -30,9 +30,9 @@ Gem::Specification.new do |spec|
     spec.add_runtime_dependency "activesupport", "~> 4.2"
     spec.add_runtime_dependency "aws-sdk", "~> 2.7"
     spec.add_runtime_dependency "dry-configurable", "~> 0.5"
-    spec.add_runtime_dependency "dry-struct", "~> 0.1"
-    spec.add_runtime_dependency "dry-types", "~> 0.12"
-    spec.add_runtime_dependency "dry-validation", "~> 0.10"
+    spec.add_runtime_dependency "dry-struct", "~> 0.5"
+    spec.add_runtime_dependency "dry-types", "~> 0.13"
+    spec.add_runtime_dependency "dry-validation", "~> 0.11"
     spec.add_runtime_dependency "gli", "~> 2.15"
     spec.add_runtime_dependency "highline", "~> 1.6"
     spec.add_runtime_dependency "i18n", "~> 0.7"
@@ -50,7 +50,7 @@ Gem::Specification.new do |spec|
 
     case PLATFORM
     when /linux|bsd/
-        spec.add_dependency "gir_ffi-gnome_keyring", "~> 0.0", ">= 0.0.3"
+        spec.add_dependency "gir_ffi-gnome_keyring", "~> 0.0", ">= 0.0.9"
     when /darwin/
         spec.add_dependency "ruby-keychain", "~> 0.3", ">= 0.3.2"
     end

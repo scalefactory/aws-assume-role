@@ -1,3 +1,10 @@
+## 1.2.0
+* Support latest version of `dry-*` gems
+* Requires ruby 2.3
+
+## 1.1.2
+* Pin breaking upstream `dry-*` gems until code is fixed in aws_assume_role
+
 ## 1.1.1
 * Allow aws-assume-role to retrieve all Yubikey stored OATH tokens (@alanthing)
 

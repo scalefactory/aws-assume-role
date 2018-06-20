@@ -5,7 +5,7 @@ module AwsAssumeRole
     module Types
         Dry = Dry::Types.module
 
-        ::Dry::Types.register_class(::Aws::Credentials)
+        ::Dry::Types.register("aws.credentials", ::Aws::Credentials)
         AwsAssumeRole::Types::Credentials = ::Dry::Types["aws.credentials"]
 
         ACCESS_KEY_REGEX = /[\w]+/
