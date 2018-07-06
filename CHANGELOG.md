@@ -1,3 +1,6 @@
+## 1.2.1
+* Fix deprecation of int in dry-types to use integer
+
 ## 1.2.0
 * Support latest version of `dry-*` gems
 * Requires ruby 2.3

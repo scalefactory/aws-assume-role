@@ -11,7 +11,7 @@ class AwsAssumeRole::ProfileConfiguration < Dry::Struct
     attribute :credentials, Dry::Types["object"].optional
     attribute :secret_access_key, Dry::Types["strict.string"].optional
     attribute :session_token, Dry::Types["strict.string"].optional
-    attribute :duration_seconds, Dry::Types["coercible.int"].optional
+    attribute :duration_seconds, Dry::Types["coercible.integer"].optional
     attribute :external_id, Dry::Types["strict.string"].optional
     attribute :path, Dry::Types["strict.string"].optional
     attribute :persist_session, Dry::Types["strict.bool"].optional.default(true)
@@ -27,7 +27,7 @@ class AwsAssumeRole::ProfileConfiguration < Dry::Struct
     attribute :shell_type, Dry::Types["strict.string"].optional
     attribute :source_profile, Dry::Types["strict.string"].optional
     attribute :args, Dry::Types["strict.array"].optional.default([])
-    attribute :instance_profile_credentials_retries, Dry::Types["strict.int"].default(0)
+    attribute :instance_profile_credentials_retries, Dry::Types["strict.integer"].default(0)
     attribute :instance_profile_credentials_timeout, Dry::Types["coercible.float"].default(1.0)
 
     attr_writer :credentials
