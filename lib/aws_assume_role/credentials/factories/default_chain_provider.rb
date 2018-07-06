@@ -19,9 +19,9 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider < Dry::Struct
 
     attribute :access_key_id, Dry::Types["strict.string"].optional
     attribute :credentials, Dry::Types["object"].optional
-    attribute :duration_seconds, Dry::Types["coercible.int"].optional
+    attribute :duration_seconds, Dry::Types["coercible.integer"].optional
     attribute :external_id, Dry::Types["strict.string"].optional
-    attribute :instance_profile_credentials_retries, Dry::Types["strict.int"].default(0)
+    attribute :instance_profile_credentials_retries, Dry::Types["strict.integer"].default(0)
     attribute :instance_profile_credentials_timeout, Dry::Types["coercible.float"].default(1.0)
     attribute :mfa_serial, Dry::Types["strict.string"].optional
     attribute :no_profile, Dry::Types["strict.bool"].default(false)

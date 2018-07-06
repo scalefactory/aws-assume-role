@@ -30,7 +30,7 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
     attribute :persist_session, (Dry::Types["strict.bool"]
         .default(true)
         .constructor { |v| v.nil? ? Dry::Types::Undefined : v })
-    attribute :duration_seconds, (Dry::Types["coercible.int"]
+    attribute :duration_seconds, (Dry::Types["coercible.integer"]
         .default(3600)
         .constructor { |v| v.nil? ? Dry::Types::Undefined : v })
     attribute :region, AwsAssumeRole::Types::Region

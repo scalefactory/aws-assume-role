@@ -7,7 +7,7 @@ class AwsAssumeRole::Credentials::Factories::Repository
     include AwsAssumeRole::Credentials::Factories
 
     SubFactoryRepositoryType = Types::Hash.schema(
-        Types::Coercible::Int => Types::Strict::Array.meta(omittable: true),
+        Types::Coercible::Integer => Types::Strict::Array.meta(omittable: true),
     )
 
     FactoryRepositoryType = Types::Hash.schema(

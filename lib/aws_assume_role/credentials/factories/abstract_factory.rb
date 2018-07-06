@@ -22,7 +22,7 @@ class AwsAssumeRole::Credentials::Factories::AbstractFactory
     end
 
     def self.priority(i)
-        @priority = Types::Strict::Int[i]
+        @priority = Types::Strict::Integer[i]
         register_if_complete
     end
 
