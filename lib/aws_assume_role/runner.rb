@@ -17,7 +17,7 @@ class AwsAssumeRole::Runner < Dry::Struct
         super(options)
         command_to_exec = command.map(&:shellescape).join(" ")
         process_credentials unless credentials.blank?
-        system environment, command_to_exec
+        system @environment, command_to_exec
         exit_status = $CHILD_STATUS.exitstatus
         process_error(exit_status) if exit_status != expected_exit_code
     end
