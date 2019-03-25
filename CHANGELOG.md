@@ -1,3 +1,6 @@
+## 1.2.2
+* Pin dry-types to keep support of object type
+
 ## 1.2.1
 * Fix deprecation of int in dry-types to use integer
 
