@@ -5,7 +5,7 @@ require_relative "includes"
 module AwsAssumeRole
     class Configuration
         extend Dry::Configurable
-        Types = Dry::Types.module
+        Types = Dry.Types(default: :nominal)
 
         setting(:backend_plugin, ENV.fetch("AWS_ASSUME_ROLE_KEYRING_PLUGIN", nil)) do |value|
             Types::Coercible::String[value]

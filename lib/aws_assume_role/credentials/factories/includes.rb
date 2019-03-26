@@ -7,7 +7,7 @@ require_relative "../../../aws_assume_role"
 
 module AwsAssumeRole::Credentials
     module Factories
-        Types = Dry::Types.module
+        Types = Dry.Types(default: :nominal)
         include AwsAssumeRole
         include AwsAssumeRole::Logging
         include AwsAssumeRole::Vendored::Aws

@@ -3,7 +3,7 @@
 require_relative "includes"
 module AwsAssumeRole
     module Types
-        Dry = Dry::Types.module
+        Dry = Dry.Types(default: :nominal)
 
         ::Dry::Types.register("aws.credentials", ::Aws::Credentials)
         AwsAssumeRole::Types::Credentials = ::Dry::Types["aws.credentials"]
