@@ -3,9 +3,9 @@ sudo: false
 script: bundle exec rake
 jobs:
   include:
-    - rvm: 2.3
-      script: bundle exec rake
     - rvm: 2.5
+      script: bundle exec rake
+    - rvm: 2.6
       script: bundle exec rake
     - stage: deploy
       rvm: 2.5

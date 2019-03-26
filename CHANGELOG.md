@@ -1,3 +1,7 @@
+## 1.3.0
+* Requires Ruby 2.5
+* Support latest version of `dry-*` gems
+
 ## 1.2.2
 * Pin dry-types to keep support of object type
 
