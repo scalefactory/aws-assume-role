@@ -19,10 +19,10 @@ class AwsAssumeRole::Credentials::Providers::MfaSessionCredentials < Dry::Struct
 
     transform_types { |t| t.meta(omittable: true) }
 
-    attribute :permanent_credentials, Dry::Types["object"]
-    attribute :credentials, Dry::Types["object"]
+    attribute :permanent_credentials, Dry::Types["any"]
+    attribute :credentials, Dry::Types["any"]
     attribute :expiration, (Dry::Types["strict.time"]
-        .default(Time.now)
+        .default(Time.now, shared: true)
         .constructor { |v| v.nil? ? Dry::Types::Undefined : v })
     attribute :first_time, (Dry::Types["strict.bool"]
         .default(true)

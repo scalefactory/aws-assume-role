@@ -18,7 +18,7 @@ class AwsAssumeRole::Credentials::Factories::DefaultChainProvider < Dry::Struct
     transform_types { |t| t.meta(omittable: true) }
 
     attribute :access_key_id, Dry::Types["strict.string"].optional
-    attribute :credentials, Dry::Types["object"].optional
+    attribute :credentials, Dry::Types["any"].optional
     attribute :duration_seconds, Dry::Types["coercible.integer"].optional
     attribute :external_id, Dry::Types["strict.string"].optional
     attribute :instance_profile_credentials_retries, Dry::Types["strict.integer"].default(0)

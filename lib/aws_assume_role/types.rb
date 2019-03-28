@@ -3,10 +3,8 @@
 require_relative "includes"
 module AwsAssumeRole
     module Types
-        Dry = Dry.Types(default: :nominal)
 
-        ::Dry::Types.register("aws.credentials", ::Aws::Credentials)
-        AwsAssumeRole::Types::Credentials = ::Dry::Types["aws.credentials"]
+        include Dry.Types(default: :nominal)
 
         ACCESS_KEY_REGEX = /[\w]+/
         ACCESS_KEY_VALIDATOR = proc { filled? & str? & format?(ACCESS_KEY_REGEX) & min_size?(16) & max_size?(32) }
@@ -20,11 +18,13 @@ module AwsAssumeRole
         SECRET_ACCESS_KEY_REGEX = //
         SECRET_ACCESS_KEY_VALIDATOR = proc { filled? & str? & format?(SECRET_ACCESS_KEY_REGEX) }
 
-        AwsAssumeRole::Types::Region = Dry::Strict::String.constrained(
+        AwsAssumeRole::Types::Credentials = Types::Any.optional
+
+        AwsAssumeRole::Types::Region = Types::Strict::String.constrained(
             format: REGION_REGEX,
         )
 
-        AwsAssumeRole::Types::MfaSerial = Dry::Strict::String.constrained(
+        AwsAssumeRole::Types::MfaSerial = Types::Strict::String.constrained(
             format: MFA_REGEX,
         )
     end

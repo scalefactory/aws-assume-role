@@ -7,26 +7,26 @@ class AwsAssumeRole::ProfileConfiguration < Dry::Struct
     include AwsAssumeRole::Logging
     transform_types { |t| t.meta(omittable: true) }
 
-    attribute :access_key_id, Dry::Types["strict.string"].optional
-    attribute :credentials, Dry::Types["object"].optional
-    attribute :secret_access_key, Dry::Types["strict.string"].optional
-    attribute :session_token, Dry::Types["strict.string"].optional
-    attribute :duration_seconds, Dry::Types["coercible.integer"].optional
-    attribute :external_id, Dry::Types["strict.string"].optional
-    attribute :path, Dry::Types["strict.string"].optional
-    attribute :persist_session, Dry::Types["strict.bool"].optional.default(true)
-    attribute :profile, Dry::Types["strict.string"].optional
-    attribute :region, Dry::Types["strict.string"].optional
-    attribute :role_arn, Dry::Types["strict.string"].optional
-    attribute :role_session_name, Dry::Types["strict.string"].optional
-    attribute :serial_number, Dry::Types["strict.string"].optional
-    attribute :mfa_serial, Dry::Types["strict.string"].optional
-    attribute :yubikey_oath_name, Dry::Types["strict.string"].optional
-    attribute :use_mfa, Dry::Types["strict.bool"].optional.default(false)
-    attribute :no_profile, Dry::Types["strict.bool"].optional.default(false)
-    attribute :shell_type, Dry::Types["strict.string"].optional
-    attribute :source_profile, Dry::Types["strict.string"].optional
-    attribute :args, Dry::Types["strict.array"].optional.default([])
+    attribute :access_key_id, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :credentials, Dry::Types["any"].optional.meta(omittable: true)
+    attribute :secret_access_key, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :session_token, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :duration_seconds, Dry::Types["coercible.integer"].optional.meta(omittable: true)
+    attribute :external_id, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :path, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :persist_session, Dry::Types["strict.bool"].optional.default(true).meta(omittable: true)
+    attribute :profile, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :region, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :role_arn, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :role_session_name, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :serial_number, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :mfa_serial, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :yubikey_oath_name, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :use_mfa, Dry::Types["strict.bool"].default(false)
+    attribute :no_profile, Dry::Types["strict.bool"].default(false)
+    attribute :shell_type, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :source_profile, Dry::Types["strict.string"].optional.meta(omittable: true)
+    attribute :args, Dry::Types["strict.array"].default([],shared: true)
     attribute :instance_profile_credentials_retries, Dry::Types["strict.integer"].default(0)
     attribute :instance_profile_credentials_timeout, Dry::Types["coercible.float"].default(1.0)
 
