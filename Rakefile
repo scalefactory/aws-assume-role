@@ -62,7 +62,7 @@ task :build_generic do
 end
 
 task :no_pry do
-    files = Dir.glob("**/**").reject { |x| x.match(/^spec|Gemfile|coverage|\.gemspec$|Rakefile/) || File.directory?(x) }
+    files = Dir.glob("**/**").reject { |x| x.match(/^spec|Gemfile|coverage|\.gemspec$|Rakefile|vendor/) || File.directory?(x) }
     files.each do |file|
         raise "Use of pry found in #{file}." if File.read(file) =~ /"pry"/
     end

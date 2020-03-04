@@ -4,6 +4,7 @@ AllCops:
     DisplayCopNames: true
     Exclude:
     - 'lib/aws_assume_role/vendored/**/*.rb'
+    - 'vendor/**/*'
 
 Metrics/MethodLength:
     Enabled: false

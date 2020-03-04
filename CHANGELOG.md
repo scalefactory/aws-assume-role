@@ -1,3 +1,6 @@
+## 1.2.3
+* Pin dry-eualizer to keep support of Ruby 2.3
+
 ## 1.2.2
 * Pin dry-types to keep support of object type
 
