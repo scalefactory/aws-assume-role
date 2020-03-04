@@ -78,6 +78,14 @@ module AwsAssumeRole
                     "http://169.254.169.254/latest/meta-data/iam/security-credentials/",
                 ).to_return(status: 200, body: "profile-name\n")
                 stub_request(
+                    :put,
+                    "http://169.254.169.254/latest/api/token",
+                ).with(headers: { 'Accept': "*/*",
+                                  'Accept-Encoding': "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+                                  'User-Agent': "aws-sdk-ruby2/2.11.458",
+                                  'X-Aws-Ec2-Metadata-Token-Ttl-Seconds': "21600" })
+                    .to_return(status: 200, body: "", headers: {})
+                stub_request(
                     :get,
                     "http://169.254.169.254/latest/meta-data/iam/security-credentials/profile-name",
                 ).to_return(status: 200, body: <<-JSON.strip)
@@ -137,6 +145,14 @@ JSON
         describe "AWS_SDK_CONFIG_OPT_OUT set" do
             before(:each) do
                 stub_const("ENV", {})
+                stub_request(
+                    :put,
+                    "http://169.254.169.254/latest/api/token",
+                ).with(headers: { 'Accept': "*/*",
+                                  'Accept-Encoding': "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+                                  'User-Agent': "aws-sdk-ruby2/2.11.458",
+                                  'X-Aws-Ec2-Metadata-Token-Ttl-Seconds': "21600" })
+                    .to_return(status: 200, body: "", headers: {})
                 Aws.shared_config.fresh(
                     config_enabled: false,
                     credentials_path: mock_credential_file,

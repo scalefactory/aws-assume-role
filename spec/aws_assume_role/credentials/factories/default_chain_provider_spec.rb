@@ -35,6 +35,14 @@ module AwsAssumeRole::Credentials::Factories
         end
 
         it "defaults to nil when credentials not set" do
+            stub_request(
+                :put,
+                "http://169.254.169.254/latest/api/token",
+            ).with(headers: { 'Accept': "*/*",
+                              'Accept-Encoding': "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+                              'User-Agent': "aws-sdk-ruby2/2.11.458",
+                              'X-Aws-Ec2-Metadata-Token-Ttl-Seconds': "21600" })
+                .to_return(status: 200, body: "", headers: {})
             expect(credentials).to be(nil)
         end
 
@@ -104,6 +112,14 @@ module AwsAssumeRole::Credentials::Factories
         end
 
         it "hydrates credentials from the instance profile service" do
+            stub_request(
+                :put,
+                "http://169.254.169.254/latest/api/token",
+            ).with(headers: { 'Accept': "*/*",
+                              'Accept-Encoding': "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+                              'User-Agent': "aws-sdk-ruby2/2.11.458",
+                              'X-Aws-Ec2-Metadata-Token-Ttl-Seconds': "21600" })
+                .to_return(status: 200, body: "", headers: {})
             path = "/latest/meta-data/iam/security-credentials/"
             resp = <<-JSON.strip
 {
@@ -131,6 +147,14 @@ module AwsAssumeRole::Credentials::Factories
             let(:config) { nil }
 
             it "defaults to nil" do
+                stub_request(
+                    :put,
+                    "http://169.254.169.254/latest/api/token",
+                ).with(headers: { 'Accept': "*/*",
+                                  'Accept-Encoding': "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+                                  'User-Agent': "aws-sdk-ruby2/2.11.458",
+                                  'X-Aws-Ec2-Metadata-Token-Ttl-Seconds': "21600" })
+                    .to_return(status: 200, body: "", headers: {})
                 expect(credentials).to be(nil)
             end
         end
@@ -144,11 +168,27 @@ module AwsAssumeRole::Credentials::Factories
             end
 
             it "returns no credentials when the shared file is empty" do
+                stub_request(
+                    :put,
+                    "http://169.254.169.254/latest/api/token",
+                ).with(headers: { 'Accept': "*/*",
+                                  'Accept-Encoding': "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+                                  'User-Agent': "aws-sdk-ruby2/2.11.458",
+                                  'X-Aws-Ec2-Metadata-Token-Ttl-Seconds': "21600" })
+                    .to_return(status: 200, body: "", headers: {})
                 expect(File).to receive(:read).with(path).and_return("")
                 expect(chain.resolve).to be(nil)
             end
 
             it "returns no credentials when the shared file profile is missing" do
+                stub_request(
+                    :put,
+                    "http://169.254.169.254/latest/api/token",
+                ).with(headers: { 'Accept': "*/*",
+                                  'Accept-Encoding': "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+                                  'User-Agent': "aws-sdk-ruby2/2.11.458",
+                                  'X-Aws-Ec2-Metadata-Token-Ttl-Seconds': "21600" })
+                    .to_return(status: 200, body: "", headers: {})
                 no_default = <<-CREDS.strip
 [fooprofile]
 aws_access_key_id = ACCESS_KEY_1
