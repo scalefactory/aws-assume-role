@@ -6,7 +6,7 @@ module AwsAssumeRole::Ui
     include AwsAssumeRole
 
     ::I18n.load_path += Dir.glob(File.join(File.realpath(__dir__), "..", "..", "i18n", "*.{rb,yml,yaml}"))
-    ::I18n.locale = ENV.fetch("LANG", nil).split(".").first.split("_").first || I18n.default_locale
+    ::I18n.locale = ENV.fetch("LANG", nil)&.split(".")&.first&.split("_")&.first || I18n.default_locale
 
     module_function
 
