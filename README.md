@@ -5,6 +5,14 @@ aws-assume-role
 [![Code Climate](https://codeclimate.com/github/scalefactory/aws-assume-role/badges/gpa.svg)](https://codeclimate.com/github/scalefactory/aws-assume-role)
 [![Gem Version](https://badge.fury.io/rb/aws_assume_role.svg)](https://badge.fury.io/rb/aws_assume_role)
 
+This is an open source project published by The Scale Factory.
+
+We currently consider this project to be hibernating.
+
+These are projects that we’re no longer prioritising, but which we keep ticking over for the benefit of the few customers we support who still use them.
+
+:information_source: We’re not regularly patching these projects, or actively watching for issues or PRs. We’ll periodically make updates or respond to contributions if one of the team has some spare time to invest.
+
 aws-assume-role is a utility intended for developer and operator environments
 who need to use 2FA and role assumption to access AWS services.
 
