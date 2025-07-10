@@ -44,7 +44,7 @@ Gem::Specification.new do |spec|
     spec.executables   = spec.files.grep(%r{^bin/aws}) { |f| File.basename(f) }
     spec.require_paths = ["lib"]
     spec.platform = PLATFORM unless ENV.fetch("GENERIC_GEM", false)
-    spec.add_runtime_dependency "activesupport", "~> 4.2"
+    spec.add_runtime_dependency "activesupport", ">= 4.2", "< 9.0"
     spec.add_runtime_dependency "aws-sdk", "~> 2.7"
     spec.add_runtime_dependency "dry-configurable", "~> 0.5"
     spec.add_runtime_dependency "dry-equalizer", "~> 0.2.2" # 0.3.0 requires Ruby 2.4
@@ -53,7 +53,7 @@ Gem::Specification.new do |spec|
     spec.add_runtime_dependency "dry-validation", "~> 0.11"
     spec.add_runtime_dependency "gli", "~> 2.15"
     spec.add_runtime_dependency "highline", "~> 1.6"
-    spec.add_runtime_dependency "i18n", "~> 0.7"
+    spec.add_runtime_dependency "i18n", ">= 0.7", "< 2.0"
     spec.add_runtime_dependency "inifile", "~> 3.0"
     spec.add_runtime_dependency "launchy", "~> 2.4"
     spec.add_runtime_dependency "keyring", "~> 0.4", ">= 0.4.1"
